@@ -1,0 +1,725 @@
+<title>Vida en Pasarela</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500..900;1,6..96,500..900&family=Nunito:wght@500;700;800&display=swap">
+<style>
+/* Layout: una sola columna tipo app de celular; arriba los números, al centro el escenario con tu personaje, abajo las decisiones. */
+:root{
+  --bg:#F7F1F8; --surface:#FFFFFF; --ink:#2A1838; --muted:#76627F; --line:#E5D6EA;
+  --accent:#C81D6B; --accent-ink:#FFFFFF; --gold:#9A6E0C; --mint:#1C7F67; --soft:#F1DDEC; --soft2:#E9E1F7;
+  --display:'Bodoni Moda', Didot, 'Bodoni 72', Georgia, serif;
+  --body:'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#170E1C; --surface:#23162B; --ink:#F6ECF8; --muted:#B9A3C2; --line:#3A2944;
+    --accent:#FF5C9F; --accent-ink:#1A0E1F; --gold:#E7B84B; --mint:#4FD1AE; --soft:#3A2040; --soft2:#2A2142;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#170E1C; --surface:#23162B; --ink:#F6ECF8; --muted:#B9A3C2; --line:#3A2944;
+  --accent:#FF5C9F; --accent-ink:#1A0E1F; --gold:#E7B84B; --mint:#4FD1AE; --soft:#3A2040; --soft2:#2A2142;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{height:100%;box-sizing:border-box}
+body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+#app{max-width:480px;margin:0 auto;height:100%;display:flex;flex-direction:column}
+header{display:flex;gap:8px;flex-wrap:wrap;padding:10px 16px 6px}
+.chip{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:800;font-size:14px;font-variant-numeric:tabular-nums}
+.chip.money{color:var(--gold)} .chip.mood{color:var(--mint)} .chip.fame{color:var(--accent)}
+.chip.neg{color:#D23A3A}
+main{flex:1;overflow-y:auto;padding:6px 16px 28px;display:flex;flex-direction:column;gap:14px}
+main>*{flex-shrink:0}
+h1,h2{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.08}
+h1{font-size:2.6rem;font-style:italic;font-weight:800;letter-spacing:-.01em}
+h2{font-size:1.65rem;font-weight:700}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.14em;font-weight:800;color:var(--accent)}
+.muted{color:var(--muted)}
+p{margin:0}
+.stage{position:relative;border-radius:22px;background:radial-gradient(120% 90% at 50% 100%,var(--soft) 0%,var(--soft2) 55%,var(--bg) 100%);display:flex;justify-content:center;align-items:flex-end;height:250px;overflow:hidden;flex-shrink:0}
+.stage.sm{height:200px}
+.stage svg{height:96%;width:auto;max-width:100%}
+.stage::after{content:"";position:absolute;left:20%;right:20%;bottom:6px;height:10px;border-radius:50%;background:var(--ink);opacity:.08}
+.story{font-size:1.06rem;max-width:65ch}
+.story b{color:var(--accent)}
+.notice{background:var(--surface);border:1px dashed var(--accent);border-radius:14px;padding:10px 14px;font-size:14px;font-weight:700}
+.choices,.stack{display:flex;flex-direction:column;gap:10px}
+.btn{display:block;width:100%;padding:13px 16px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:800;text-align:left;cursor:pointer;transition:transform .08s ease,border-color .15s}
+.btn:active{transform:scale(.98)}
+.btn .note{display:block;font-weight:600;color:var(--muted);font-size:13px;margin-top:2px}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);text-align:center;font-size:1.05rem}
+.btn.primary .note{color:var(--accent-ink);opacity:.85}
+.btn.ghost{background:transparent;text-align:center}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+.btn:focus-visible,.item:focus-visible,.tab:focus-visible,.card:focus-visible,.tile:focus-visible,.swatch:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pips{display:flex;gap:6px;align-items:center;font-weight:800;font-size:14px}
+.pip{width:14px;height:14px;border-radius:50%;border:2px solid var(--accent)}
+.pip.on{background:var(--accent)}
+.info{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:14px}
+label.lbl{font-weight:800;font-size:14px}
+input[type=text]{width:100%;font:inherit;font-size:1.1rem;padding:12px 14px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+input[type=text]:focus{outline:3px solid var(--accent);outline-offset:1px}
+.skins{display:flex;gap:10px;flex-wrap:wrap}
+.swatch{width:44px;height:44px;border-radius:50%;border:3px solid var(--surface);box-shadow:0 0 0 1.5px var(--line);cursor:pointer}
+.swatch.on{box-shadow:0 0 0 3px var(--accent)}
+.banner{background:var(--ink);color:var(--bg);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.banner .eyebrow{color:var(--bg);opacity:.75}
+.banner strong{font-family:var(--display);font-size:1.3rem;font-style:italic}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:4px;gap:4px}
+.seg button{font:inherit;font-weight:800;border:0;border-radius:10px;padding:9px;background:transparent;color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.tab{flex-shrink:0;font:inherit;font-weight:800;font-size:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 14px;cursor:pointer}
+.tab.on{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}
+.item{font:inherit;color:var(--ink);border-radius:16px;border:1.5px solid var(--line);background:var(--surface);padding:10px 8px;display:flex;flex-direction:column;gap:5px;align-items:center;text-align:center;cursor:pointer;min-width:0}
+.item.on{border-color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent)}
+.item .sw{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:22px;border:1px solid var(--line)}
+.item .nm{font-weight:800;font-size:13px;line-height:1.2}
+.item .pr{font-weight:800;font-size:13px;color:var(--gold);font-variant-numeric:tabular-nums}
+.tags{display:flex;gap:3px;flex-wrap:wrap;justify-content:center}
+.tag{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:2px 6px;border-radius:6px;background:var(--soft2);color:var(--muted)}
+.tag.hit{background:var(--accent);color:var(--accent-ink)}
+.buybar{position:sticky;bottom:0;background:var(--bg);padding-top:8px;display:flex;flex-direction:column;gap:8px}
+.empty{padding:18px;text-align:center;border:1.5px dashed var(--line);border-radius:16px;color:var(--muted);font-weight:700}
+.stars{font-size:2.2rem;letter-spacing:.08em;color:var(--gold);line-height:1}
+.stars .off{opacity:.22}
+.fb{display:flex;flex-direction:column;gap:6px;font-size:14px}
+.fb div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+.pcard{display:flex;gap:12px;align-items:center}
+.pcard .ic{font-size:30px;width:52px;height:52px;border-radius:14px;background:var(--soft);display:grid;place-items:center;flex-shrink:0}
+.ptop{display:flex;justify-content:space-between;font-weight:800;font-variant-numeric:tabular-nums}
+.timer{color:var(--accent)}
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.card{aspect-ratio:3/4;max-width:100%;border-radius:12px;border:0;font-size:2rem;cursor:pointer;background:repeating-linear-gradient(45deg,var(--accent) 0 8px,color-mix(in srgb,var(--accent) 80%,var(--bg)) 8px 16px);transition:transform .2s}
+.card.up{background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line)}
+.card.done{opacity:.55}
+.slots,.letters{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.tile{width:40px;height:48px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:800;font-size:1.3rem;cursor:pointer}
+.tile.slot{background:var(--soft2);border-style:dashed}
+.tile.slot.full{background:var(--surface);border-style:solid;border-color:var(--accent)}
+.tile.used{opacity:.2}
+.slots.ok .tile{border-color:var(--mint);color:var(--mint)}
+.slots.bad .tile{border-color:#D23A3A;color:#D23A3A}
+.vid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.vid button{aspect-ratio:1;max-width:100%;border-radius:18px;border:1.5px solid var(--line);background:var(--surface);font-size:2.4rem;cursor:pointer;transition:transform .12s,background .12s}
+.vid button.lit{background:var(--accent);transform:scale(1.06)}
+.vid button:disabled{cursor:default;opacity:1}
+.big{font-family:var(--display);font-size:2.4rem;font-weight:800;font-style:italic;color:var(--gold)}
+.center{text-align:center;align-items:center}
+.ending{background:var(--ink);color:var(--bg);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:8px}
+.ending h2{font-style:italic;font-size:2rem}
+.ending .eyebrow{color:var(--bg);opacity:.7}
+.tiny{font-size:13px}
+.linkbtn{font:inherit;font-weight:700;font-size:13px;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:6px;align-self:center}
+#toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:800;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:calc(100% - 32px);text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<div id="app">
+  <header id="stats"></header>
+  <main id="main"></main>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const SAVE = 'vida-en-pasarela-v1';
+const MAXE = 4;
+const SKINS = ['#F6D3B8','#E8B48F','#C68A5E','#8D5A3B','#5E3A26'];
+const TAGN = {casual:'Casual', elegante:'Elegante', fiesta:'Fiesta', rocker:'Rocker', deportivo:'Deportivo'};
+
+// slot, forma, nombre, color, precio, estilos, ícono, efecto
+const ITEMS = [
+  ['t_remera_blanca','top','remera','Remera blanca','#F4F2F5',0,['casual','deportivo'],'👚'],
+  ['t_remera_negra','top','remera','Remera negra','#26222A',40,['casual','rocker'],'👚'],
+  ['t_buzo','top','buzo','Buzo celeste','#7FB7E6',80,['deportivo','casual'],'🧥'],
+  ['t_blusa_seda','top','blusa','Blusa de seda','#EED3C2',120,['elegante'],'👚'],
+  ['t_blusa_roja','top','blusa','Blusa roja','#C8283C',140,['elegante','fiesta'],'👚'],
+  ['t_crop_brillos','top','crop','Top de brillos','#B68FE8',150,['fiesta'],'✨','brillo'],
+  ['t_campera_cuero','top','campera','Campera de cuero','#1E1A1F',220,['rocker'],'🧥'],
+  ['b_jean','bottom','jean','Jean clásico','#4A6FA5',0,['casual','rocker'],'👖'],
+  ['b_short','bottom','short','Short de jean','#6C8FC7',60,['casual'],'🩳'],
+  ['b_calza','bottom','calza','Calza deportiva','#2B2B35',70,['deportivo'],'👖'],
+  ['b_pollera_negra','bottom','pollera','Pollera negra','#1E1A1F',90,['elegante','rocker'],'👗'],
+  ['b_pollera_lente','bottom','pollera','Pollera de lentejuelas','#E2B347',170,['fiesta'],'✨','brillo'],
+  ['d_floreado','dress','vestido','Vestido floreado','#F2A7B8',130,['casual'],'👗','flores'],
+  ['d_negro','dress','vestido','Vestidito negro','#141016',260,['elegante','fiesta'],'👗'],
+  ['d_brillos','dress','vestido','Vestido de brillos','#A9A6CF',320,['fiesta'],'👗','brillo'],
+  ['d_gala','dress','largo','Vestido de gala','#8E1B4C',480,['elegante'],'👗'],
+  ['s_zapa','shoes','zapa','Zapatillas blancas','#F4F2F5',0,['casual','deportivo'],'👟'],
+  ['s_sandalias','shoes','sandalias','Sandalias doradas','#D9A93A',110,['fiesta','elegante'],'👡'],
+  ['s_botas','shoes','botas','Borcegos','#2A2224',150,['rocker'],'🥾'],
+  ['s_tacos_negros','shoes','tacos','Tacos negros','#141016',160,['elegante','fiesta'],'👠'],
+  ['s_tacos_rojos','shoes','tacos','Stilettos rojos','#C8283C',240,['elegante','fiesta'],'👠'],
+  ['h_largo','hair','largo','Pelo largo','',0,['casual'],'💇'],
+  ['h_rodete','hair','rodete','Rodete','',50,['elegante'],'💇'],
+  ['h_bob','hair','bob','Corte bob','',60,['rocker'],'💇'],
+  ['h_ondas','hair','ondas','Ondas','',80,['fiesta'],'💇'],
+  ['hc_castano','hairColor','c','Castaño','#5A3825',0,[],''],
+  ['hc_negro','hairColor','c','Negro','#1C1416',40,[],''],
+  ['hc_rubio','hairColor','c','Rubio','#E2C27A',70,[],''],
+  ['hc_rojo','hairColor','c','Colorado','#B4412C',80,[],''],
+  ['hc_rosa','hairColor','c','Rosa','#F08AB5',90,[],''],
+  ['hc_violeta','hairColor','c','Violeta','#8D6BD6',90,[],''],
+  ['l_natural','lips','c','Labios naturales','#C98A7E',0,['casual','deportivo'],'💋'],
+  ['l_rosa','lips','c','Labial rosa','#E26A9A',30,['casual','fiesta'],'💋'],
+  ['l_rojo','lips','c','Labial rojo','#C2142E',45,['elegante'],'💋'],
+  ['l_bordo','lips','c','Labial bordó','#6E1430',45,['rocker','elegante'],'💋'],
+  ['e_nada','eyes','none','Sin sombra','',0,['casual','deportivo'],'👁️'],
+  ['e_rosa','eyes','c','Sombra rosa','#F0A0C0',30,['casual'],'👁️'],
+  ['e_dorado','eyes','c','Sombra dorada','#D4A63C',40,['fiesta','elegante'],'👁️'],
+  ['e_violeta','eyes','c','Sombra violeta','#9C6FD8',40,['fiesta'],'👁️'],
+  ['e_ahumado','eyes','c','Ojos ahumados','#3A2F3A',50,['rocker','fiesta'],'👁️'],
+  ['bl_no','blush','none','Sin rubor','',0,[],'🌸'],
+  ['bl_si','blush','c','Rubor','#F07A95',25,['casual','elegante'],'🌸'],
+  ['a_none','acc','none','Nada','',0,[],'✖️'],
+  ['a_gorra','acc','gorra','Gorra','#E0405E',45,['deportivo','casual'],'🧢'],
+  ['a_choker','acc','choker','Choker','#1E1A1F',50,['rocker'],'⛓️'],
+  ['a_lentes','acc','lentes','Lentes de sol','#1E1A1F',60,['casual','rocker'],'🕶️'],
+  ['a_aros','acc','aros','Aros dorados','#D9A93A',70,['elegante','fiesta'],'💫'],
+  ['a_perlas','acc','perlas','Collar de perlas','#F7F2EA',120,['elegante'],'📿'],
+  ['a_cartera','acc','cartera','Cartera','#B3364F',150,['elegante'],'👜'],
+].map(([id,slot,shape,name,color,price,tags,ic,fx])=>({id,slot,shape,name,color,price,tags,ic,fx}));
+const IT = Object.fromEntries(ITEMS.map(i=>[i.id,i]));
+const TABS = [
+  {id:'ropa',label:'Ropa',slots:['top','bottom','dress']},
+  {id:'zapatos',label:'Zapatos',slots:['shoes']},
+  {id:'pelo',label:'Pelo',slots:['hair','hairColor']},
+  {id:'make',label:'Maquillaje',slots:['lips','eyes','blush']},
+  {id:'acc',label:'Accesorios',slots:['acc']},
+];
+
+const JOBS = {tienda:{name:'Tienda de ropa',pay:150},cafe:{name:'Cafetería',pay:250},escuela:{name:'Escuela de diseño',pay:0},asistente:{name:'Asistente de Valentina Roux',pay:400}};
+const HOMES = {lu:{name:'Depto con Lu',rent:100},solo:{name:'Tu monoambiente',rent:200},tia:{name:'Casa de la tía Rosa',rent:0}};
+const CH = {1:'La gran ciudad',2:'Abriéndote camino',3:'La gran decisión'};
+
+function fresh(){
+  return {name:'',skin:1,money:300,fame:0,mood:5,energy:MAXE,chapter:1,scene:'setup',pending:null,job:null,home:null,flags:{},
+    owned:ITEMS.filter(i=>i.price===0).map(i=>i.id),
+    wear:{top:'t_remera_blanca',bottom:'b_jean',dress:null,shoes:'s_zapa',hair:'h_largo',hairColor:'hc_castano',lips:'l_natural',eyes:'e_nada',blush:'bl_no',acc:'a_none'},
+    event:null,result:null,notice:null,done:false};
+}
+let S = fresh();
+let view = null;         // pantalla temporal: 'closet' | 'puzzles' | 'puzzle'
+let ui = {tab:'ropa', mode:'mine', tryOn:null, resetAsk:false};
+let P = null;            // estado del puzzle en curso
+
+function save(){ try{ localStorage.setItem(SAVE, JSON.stringify(S)); }catch(e){} }
+function load(){ try{ const s=JSON.parse(localStorage.getItem(SAVE)); if(s && s.wear) return Object.assign(fresh(), s); }catch(e){} return null; }
+const esc = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const N = () => `<b>${esc(S.name)}</b>`;
+const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const price = it => S.job==='tienda' ? Math.round(it.price*0.8) : it.price;
+
+let toastT;
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2400); }
+
+function applyFx(fx){
+  if(!fx) return;
+  const parts=[];
+  if(fx.money){ S.money+=fx.money; parts.push((fx.money>0?'+':'−')+'$'+Math.abs(fx.money)); }
+  if(fx.fame){ S.fame=Math.max(0,S.fame+fx.fame); parts.push((fx.fame>0?'+':'')+fx.fame+' fama'); }
+  if(fx.mood){ S.mood=Math.max(0,Math.min(10,S.mood+fx.mood)); parts.push((fx.mood>0?'+':'')+fx.mood+' ánimo'); }
+  if(parts.length) toast(parts.join(' · '));
+}
+
+/* ---------- Personaje ---------- */
+function pair(svg){ return svg + `<g transform="translate(200,0) scale(-1,1)">${svg}</g>`; }
+const SPARK = {
+  top:[[84,130],[112,142],[96,162],[121,126],[78,152],[106,170]],
+  dress:[[86,140],[112,152],[96,190],[120,232],[80,252],[104,272],[132,284],[68,282],[92,226]],
+  bottom:[[80,226],[110,246],[96,270],[124,280],[70,276],[100,214]],
+};
+function deco(it, slot){
+  if(!it.fx) return '';
+  const pts = SPARK[slot]||[];
+  if(it.fx==='brillo') return pts.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.8" fill="#fff" opacity=".85"/>`).join('');
+  return pts.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="4.5" fill="#fff" opacity=".75"/><circle cx="${x}" cy="${y}" r="1.6" fill="#F5C443"/>`).join('');
+}
+function avatar(w, skinIdx){
+  const sk = SKINS[skinIdx]||SKINS[1];
+  const hc = IT[w.hairColor].color, hs = IT[w.hair].shape;
+  const g = [];
+  // pelo de atrás
+  if(hs==='largo') g.push(`<path d="M68,58 Q64,20 100,20 Q136,20 132,58 L141,172 Q100,182 59,172 Z" fill="${hc}"/>`);
+  if(hs==='ondas') g.push(`<path d="M68,58 Q62,18 100,18 Q138,18 132,58 Q148,80 137,100 Q150,122 138,142 Q148,160 132,168 Q100,178 68,168 Q52,160 62,142 Q50,122 63,100 Q52,80 68,58Z" fill="${hc}"/>`);
+  if(hs==='bob') g.push(`<path d="M65,60 Q63,21 100,21 Q137,21 135,60 L137,104 Q100,110 63,104 Z" fill="${hc}"/>`);
+  if(hs==='rodete') g.push(`<circle cx="100" cy="22" r="17" fill="${hc}"/>`);
+  // cuerpo
+  g.push(`<g stroke="${sk}" stroke-width="20" stroke-linecap="round"><line x1="84" y1="236" x2="83" y2="368"/><line x1="116" y1="236" x2="117" y2="368"/></g>`);
+  g.push(`<g stroke="${sk}" stroke-width="14" stroke-linecap="round"><line x1="68" y1="124" x2="54" y2="226"/><line x1="132" y1="124" x2="146" y2="226"/></g><circle cx="53" cy="232" r="8" fill="${sk}"/><circle cx="147" cy="232" r="8" fill="${sk}"/>`);
+  g.push(`<rect x="92" y="86" width="16" height="32" fill="${sk}"/><path d="M66,118 Q100,108 134,118 L128,206 Q130,222 136,240 L64,240 Q70,222 72,206 Z" fill="${sk}"/>`);
+  // zapatos
+  const sh = IT[w.shoes], sc = sh.color;
+  if(sh.shape==='zapa') g.push(pair(`<rect x="68" y="361" width="31" height="21" rx="9" fill="${sc}" stroke="#CFC6D3" stroke-width="1"/><rect x="68" y="377" width="31" height="5" rx="2" fill="#CFC6D3"/>`));
+  if(sh.shape==='tacos') g.push(pair(`<path d="M72,358 L95,358 L97,371 L87,382 L70,376 Z" fill="${sc}"/><rect x="72" y="374" width="4" height="13" fill="${sc}"/>`));
+  if(sh.shape==='botas') g.push(pair(`<rect x="71" y="298" width="25" height="78" rx="5" fill="${sc}"/><rect x="68" y="370" width="31" height="13" rx="5" fill="${sc}"/><rect x="68" y="379" width="31" height="4" rx="2" fill="#111"/>`));
+  if(sh.shape==='sandalias') g.push(pair(`<rect x="69" y="378" width="30" height="5" rx="2" fill="${sc}"/><path d="M73,365 L95,373 M73,374 L95,365" stroke="${sc}" stroke-width="3" stroke-linecap="round"/>`));
+  // abajo / vestido
+  if(w.dress){
+    const d = IT[w.dress], c = d.color;
+    if(d.shape==='vestido') g.push(`<path d="M70,118 Q100,112 130,118 L126,200 L150,302 L50,302 L74,200 Z" fill="${c}"/>`);
+    if(d.shape==='largo') g.push(`<path d="M70,118 Q100,112 130,118 L126,200 L158,374 L42,374 L74,200 Z" fill="${c}"/><path d="M74,200 L126,200" stroke="rgba(255,255,255,.35)" stroke-width="3"/>`);
+    g.push(deco(d,'dress'));
+  } else {
+    const b = IT[w.bottom], c = b.color;
+    if(b.shape==='jean') g.push(`<path d="M65,200 L135,200 L138,240 L129,368 L105,368 L101,252 L99,252 L95,368 L71,368 L62,240 Z" fill="${c}"/><path d="M100,206 L100,250" stroke="rgba(0,0,0,.2)" stroke-width="2"/>`);
+    if(b.shape==='calza') g.push(`<path d="M66,200 L134,200 L136,240 L127,362 L107,362 L101,252 L99,252 L93,362 L73,362 L64,240 Z" fill="${c}"/>`);
+    if(b.shape==='short') g.push(`<path d="M66,200 L134,200 L140,268 L104,268 L100,250 L96,268 L60,268 Z" fill="${c}"/>`);
+    if(b.shape==='pollera') g.push(`<path d="M68,200 L132,200 L148,290 L52,290 Z" fill="${c}"/>`);
+    g.push(deco(b,'bottom'));
+    const t = IT[w.top], tc = t.color;
+    const sleeves = `<g stroke="${tc}" stroke-width="18" stroke-linecap="round"><line x1="68" y1="124" x2="55" y2="216"/><line x1="132" y1="124" x2="145" y2="216"/></g>`;
+    if(t.shape==='remera') g.push(`<path d="M64,116 Q100,108 136,116 L152,150 L136,158 L131,212 L69,212 L64,158 L48,150 Z" fill="${tc}" stroke="rgba(0,0,0,.08)"/>`);
+    if(t.shape==='crop') g.push(`<path d="M68,116 Q100,108 132,116 L129,178 L71,178 Z" fill="${tc}"/>`);
+    if(t.shape==='blusa') g.push(sleeves+`<path d="M64,116 Q100,108 136,116 L131,214 L69,214 Z" fill="${tc}"/><path d="M90,114 Q100,128 110,114" fill="none" stroke="rgba(0,0,0,.15)" stroke-width="2"/>`);
+    if(t.shape==='buzo') g.push(sleeves+`<path d="M64,116 Q100,108 136,116 L131,214 L69,214 Z" fill="${tc}"/><path d="M80,182 L120,182 L124,208 L76,208 Z" fill="rgba(0,0,0,.12)"/><path d="M84,113 Q100,130 116,113" fill="none" stroke="rgba(0,0,0,.2)" stroke-width="3"/>`);
+    if(t.shape==='campera') g.push(sleeves+`<path d="M86,114 L114,114 L112,214 L88,214 Z" fill="#EFE9F2"/>`+pair(`<path d="M64,116 L90,112 L95,214 L69,214 Z" fill="${tc}"/><path d="M90,112 L82,140 L94,150" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="2"/>`));
+    g.push(deco(t,'top'));
+  }
+  // accesorios de cuello
+  const a = IT[w.acc];
+  if(a.shape==='perlas'){ let s=''; for(let i=0;i<=8;i++){const t=i/8; s+=`<circle cx="${86+28*t}" cy="${110+48*t*(1-t)}" r="2.8" fill="#F7F2EA" stroke="#CFC5B8" stroke-width=".6"/>`;} g.push(s); }
+  if(a.shape==='choker') g.push(`<rect x="91" y="98" width="18" height="5" rx="2" fill="${a.color}"/>`);
+  // cabeza y cara
+  g.push(`<circle cx="70" cy="62" r="7" fill="${sk}"/><circle cx="130" cy="62" r="7" fill="${sk}"/><ellipse cx="100" cy="60" rx="30" ry="34" fill="${sk}"/>`);
+  const ey = IT[w.eyes];
+  if(ey.shape!=='none') g.push(`<ellipse cx="89" cy="55" rx="9" ry="5.5" fill="${ey.color}" opacity=".8"/><ellipse cx="111" cy="55" rx="9" ry="5.5" fill="${ey.color}" opacity=".8"/>`);
+  g.push(pair(`<ellipse cx="89" cy="58" rx="5.5" ry="4" fill="#fff"/><circle cx="89" cy="58.5" r="3" fill="#2A1838"/><circle cx="90" cy="57.5" r="1" fill="#fff"/><path d="M83,55.5 Q89,51.5 95,55.5" fill="none" stroke="#2A1838" stroke-width="1.6"/><path d="M82,47 Q89,43 96,46" fill="none" stroke="${hc}" stroke-width="2.6" stroke-linecap="round"/>`));
+  if(IT[w.blush].shape!=='none') g.push(`<circle cx="80" cy="72" r="7" fill="#F07A95" opacity=".45"/><circle cx="120" cy="72" r="7" fill="#F07A95" opacity=".45"/>`);
+  g.push(`<path d="M100,63 Q97,71 100,73" fill="none" stroke="rgba(0,0,0,.22)" stroke-width="1.5"/>`);
+  g.push(`<path d="M92,81 Q96,78 100,80 Q104,78 108,81 Q100,89 92,81 Z" fill="${IT[w.lips].color}"/>`);
+  // pelo de adelante
+  if(hs==='largo') g.push(`<path d="M68,60 Q68,23 100,23 Q132,23 132,60 Q122,40 104,38 Q90,48 72,52 Z" fill="${hc}"/>`);
+  if(hs==='bob') g.push(`<path d="M68,64 Q66,23 100,23 Q134,23 132,64 Q126,44 112,40 Q100,50 86,42 Q74,48 68,64 Z" fill="${hc}"/>`);
+  if(hs==='rodete') g.push(`<path d="M70,56 Q72,26 100,26 Q128,26 130,56 Q116,36 100,36 Q84,36 70,56 Z" fill="${hc}"/>`);
+  if(hs==='ondas') g.push(`<path d="M68,62 Q66,21 100,21 Q134,21 132,62 Q124,42 114,44 Q106,34 96,42 Q84,36 76,48 Q70,52 68,62Z" fill="${hc}"/>`);
+  // accesorios de cabeza y mano
+  if(a.shape==='aros') g.push(`<circle cx="70" cy="77" r="6" fill="none" stroke="${a.color}" stroke-width="2.5"/><circle cx="130" cy="77" r="6" fill="none" stroke="${a.color}" stroke-width="2.5"/>`);
+  if(a.shape==='lentes') g.push(`<circle cx="89" cy="57" r="10" fill="${a.color}" opacity=".92"/><circle cx="111" cy="57" r="10" fill="${a.color}" opacity=".92"/><path d="M98,55 Q100,52 102,55" fill="none" stroke="${a.color}" stroke-width="2.5"/><path d="M83,52 L87,50" stroke="#fff" stroke-width="1.5" opacity=".6"/>`);
+  if(a.shape==='gorra') g.push(`<path d="M67,46 Q67,14 100,14 Q133,14 133,46 Z" fill="${a.color}"/><ellipse cx="100" cy="46" rx="38" ry="6" fill="${a.color}"/><ellipse cx="100" cy="45" rx="38" ry="3" fill="rgba(0,0,0,.18)"/>`);
+  if(a.shape==='cartera') g.push(`<path d="M140,212 Q152,192 164,212" fill="none" stroke="${a.color}" stroke-width="3"/><rect x="135" y="210" width="34" height="27" rx="6" fill="${a.color}"/><rect x="149" y="218" width="6" height="4" rx="1" fill="#E2B347"/>`);
+  return `<svg viewBox="0 0 200 400" role="img" aria-label="Tu personaje">${g.join('')}</svg>`;
+}
+
+function applyWear(w, it){
+  if(it.slot==='dress') w.dress = it.id;
+  else { w[it.slot] = it.id; if(it.slot==='top'||it.slot==='bottom') w.dress = null; }
+}
+
+/* ---------- Eventos de moda ---------- */
+function scoreOutfit(themes){
+  const w = S.wear, good = [], bad = [];
+  let pts = 0;
+  const check = (id, val) => { if(!id) return; const it=IT[id]; if(it.shape==='none') return; if(it.tags.some(t=>themes.includes(t))){ pts+=val; good.push(it.name); } else bad.push(it.name); };
+  if(w.dress) check(w.dress,6); else { check(w.top,3); check(w.bottom,3); }
+  check(w.shoes,2); check(w.acc,2); check(w.lips,1); check(w.eyes,1); check(w.hair,1);
+  const stars = Math.max(1, Math.min(5, Math.round(pts/13*5)));
+  return {stars, good, bad};
+}
+const EVENTS = {
+  fiesta:{title:'Fiesta en la terraza', themes:['fiesta'], hint:'Brillos, color y algo cómodo para bailar toda la noche.', next:'HUB:c2_inicio',
+    result:st=> st>=4 ? (S.flags.martina=true, {fx:{fame:2,mood:1}, text:`¡Todas las miradas fueron para vos! Una fotógrafa llamada <b>Martina</b> te pidió tu número para una sesión.`})
+      : st===3 ? {fx:{fame:1}, text:'La pasaste bien y tu look gustó. Hiciste un par de contactos nuevos.'}
+      : {fx:{mood:-1}, text:'Tu look no terminó de encajar con la fiesta. Nadie te dijo nada… pero vos lo sentiste.'}},
+  casting:{title:'Casting de campaña', themes:['elegante'], hint:'La marca busca un look elegante y prolijo.', next:'HUB:c3_inicio',
+    result:st=> st>=4 ? (S.flags.campania=true, {fx:{money:400,fame:3}, text:'¡Quedaste! Vas a ser la cara de la nueva campaña. Te pagan <b>$400</b>.'})
+      : st===3 ? {fx:{money:100,fame:1}, text:'Quedaste en la lista de suplentes. Te pagaron $100 por la prueba.'}
+      : {fx:{mood:-1}, text:'Esta vez no quedaste. La directora de casting te dijo: “buscábamos algo más elegante”.'}},
+  gala:{title:'Gala de la Semana de la Moda', themes:['elegante','fiesta'], hint:'Elegante y con brillo. Es la noche más importante del año.', next:'final',
+    result:st=>{
+      const fx={fame:st}; let text = st>=4 ? 'Saliste en todas las fotos de la alfombra roja. ' : st===3 ? 'Tu look estuvo bien, aunque no fue de los más comentados. ' : 'La prensa no te prestó mucha atención esta noche. ';
+      const p=S.flags.path;
+      if(p==='marca' && st>=4){ fx.money=800; text+='Tu línea de ropa se agotó en una noche: <b>+$800</b>.'; }
+      else if(p==='influencer' && st>=3){ fx.fame+=2; text+='Tu video desde la gala se hizo viral.'; }
+      else if(p==='asistente' && st>=4){ S.flags.valentina=true; text+='Valentina Roux te presentó como “mi gran promesa”.'; }
+      return {fx,text};
+    }},
+};
+
+/* ---------- Historia ---------- */
+const SCENES = {
+  c1_llegada:{ch:1, text:()=>`${N()}, tenés 19 años, $300 en el bolsillo y una valija con poca ropa. Llegaste a la gran ciudad con un sueño: hacerte un nombre en el mundo de la moda.<br><br>Primero lo primero: ¿dónde vas a vivir?`,
+    choices:()=>[
+      {t:'Compartir depto con Lu, que conociste por internet', n:'−$100 · alquiler $100 por capítulo · +1 ánimo', fx:{money:-100,mood:1}, set:()=>S.home='lu', go:'c1_trabajo'},
+      {t:'Alquilar un monoambiente para vos', n:'−$200 · alquiler $200 por capítulo · +2 ánimo', fx:{money:-200,mood:2}, set:()=>S.home='solo', go:'c1_trabajo'},
+      {t:'Quedarte en lo de tu tía Rosa', n:'Gratis, pero tiene sus reglas · −1 ánimo', fx:{mood:-1}, set:()=>S.home='tia', go:'c1_trabajo'},
+    ]},
+  c1_trabajo:{ch:1, text:()=>`Ya tenés dónde dormir. Ahora necesitás plata para vivir… y para la ropa. Te ofrecen tres cosas:`,
+    choices:()=>[
+      {t:'Atender en una tienda de ropa del centro', n:'$150 por capítulo · 20% de descuento en la tienda · +1 fama', fx:{fame:1}, set:()=>S.job='tienda', go:'HUB:c1_fiesta'},
+      {t:'Trabajar en una cafetería', n:'$250 por capítulo', set:()=>S.job='cafe', go:'HUB:c1_fiesta'},
+      {t:'Anotarte en la escuela de diseño', n:'Cuesta $100, sin sueldo · +1 fama en cada capítulo', req:()=>S.money>=100, why:'Necesitás $100', fx:{money:-100}, set:()=>{S.job='escuela';S.flags.escuela=true;}, go:'HUB:c1_fiesta'},
+    ]},
+  c1_fiesta:{ch:1, text:()=>{
+      const quien = S.home==='lu' ? 'Lu' : S.job==='cafe' ? 'Joaco, tu compañero de la cafetería' : S.job==='tienda' ? 'Cami, tu compañera de la tienda' : 'Cami, tu compañera de la escuela';
+      return `Es viernes a la noche. ${quien} te invita a una fiesta en una terraza. Dicen que va a ir gente del mundo de la moda.`; },
+    choices:()=>[
+      {t:'¡Vamos! Elegir el look', n:'Evento de moda: estilo Fiesta', event:'fiesta'},
+      {t:'Quedarte en casa a descansar', n:'+1 ánimo', fx:{mood:1}, go:'HUB:c2_inicio'},
+    ]},
+  c2_inicio:{ch:2, text:()=> S.flags.martina
+      ? `Martina, la fotógrafa que conociste en la fiesta, te escribe: quiere hacerte una sesión de fotos para su portfolio.`
+      : `Una fotógrafa llamada Martina vio tus fotos en redes y te escribe: quiere hacerte una sesión para su portfolio.`,
+    choices:()=>[
+      {t:'Aceptar gratis, por la experiencia', n:'+2 fama', fx:{fame:2}, set:()=>S.flags.amigaMartina=true, go:'c2_problema'},
+      {t:'Aceptar, pero cobrarle', n:'+$120 · +1 fama', fx:{money:120,fame:1}, go:'c2_problema'},
+      {t:'Decirle que no tenés tiempo', n:'+1 ánimo', fx:{mood:1}, go:'c2_problema'},
+    ]},
+  c2_problema:{ch:2, text:()=> S.home==='lu'
+      ? `Lu llega llorando: la echaron del trabajo y no puede pagar su parte del alquiler este mes.`
+      : S.home==='solo' ? `Se rompió el calefón del monoambiente. Hace frío y el arreglo sale $150.`
+      : `Tu tía Rosa cumple 60 y te pide ayuda con la fiesta del sábado… justo el día de un evento de moda importante.`,
+    choices:()=> S.home==='lu' ? [
+      {t:'Pagarle su parte', n:'−$150 · +2 ánimo', req:()=>S.money>=150, why:'Necesitás $150', fx:{money:-150,mood:2}, set:()=>S.flags.lu=true, go:'HUB:c2_casting'},
+      {t:'Ayudarla a buscar trabajo', n:'+1 ánimo', fx:{mood:1}, go:'HUB:c2_casting'},
+      {t:'Decirle que se arregle', n:'−2 ánimo', fx:{mood:-2}, go:'HUB:c2_casting'},
+    ] : S.home==='solo' ? [
+      {t:'Pagar el arreglo', n:'−$150 · +1 ánimo', req:()=>S.money>=150, why:'Necesitás $150', fx:{money:-150,mood:1}, go:'HUB:c2_casting'},
+      {t:'Arreglarlo con un tutorial', n:'−$30 en repuestos · −1 ánimo', fx:{money:-30,mood:-1}, go:'HUB:c2_casting'},
+      {t:'Bañarte con agua fría', n:'−2 ánimo', fx:{mood:-2}, go:'HUB:c2_casting'},
+    ] : [
+      {t:'Ayudar a la tía Rosa', n:'+2 ánimo', fx:{mood:2}, set:()=>S.flags.tia=true, go:'HUB:c2_casting'},
+      {t:'Ir al evento de moda', n:'+2 fama · −1 ánimo', fx:{fame:2,mood:-1}, go:'HUB:c2_casting'},
+      {t:'Hacer las dos cosas corriendo', n:'+1 fama · −1 ánimo', fx:{fame:1,mood:-1}, go:'HUB:c2_casting'},
+    ]},
+  c2_casting:{ch:2, text:()=>`Te llega un mensaje: hay un <b>casting</b> para la campaña de una marca de ropa conocida. Buscan un look <b>elegante</b>.`,
+    choices:()=>[
+      {t:'¡Ir al casting! Elegir el look', n:'Evento de moda: estilo Elegante', event:'casting'},
+      {t:'Mandar solo fotos por mail', n:'Más fácil, pero menos chances', go:'c2_fotos'},
+    ]},
+  c2_fotos:{ch:2, text:()=>`Te respondieron con un mensaje automático: “Gracias por participar”. Bueno, otra vez será.`,
+    choices:()=>[{t:'Seguir adelante', go:'HUB:c3_inicio'}]},
+  c3_inicio:{ch:3, text:()=>`Tu nombre empieza a sonar en el ambiente. Te llegan propuestas que pueden cambiarte la vida. ¿Cuál elegís?`,
+    choices:()=>[
+      {t:'Ser asistente de la diseñadora Valentina Roux', n:'Sueldo de $400 por capítulo', set:()=>{S.job='asistente';S.flags.path='asistente';}, go:'HUB:c3_gala'},
+      {t:'Lanzar tu propia línea de ropa', n:'Inversión de $600 · si la gala sale bien, ganás mucho', req:()=>S.money>=600, why:'Necesitás $600', fx:{money:-600}, set:()=>S.flags.path='marca', go:'HUB:c3_gala'},
+      {t:'Volverte influencer de moda', n:'Necesitás 5 de fama · +2 fama', req:()=>S.fame>=5, why:'Necesitás 5 de fama', fx:{fame:2}, set:()=>S.flags.path='influencer', go:'HUB:c3_gala'},
+      {t:'Seguir como hasta ahora', n:'+1 ánimo', fx:{mood:1}, set:()=>S.flags.path='tranqui', go:'HUB:c3_gala'},
+    ]},
+  c3_gala:{ch:3, text:()=>`Llegó la noche: la gala de cierre de la Semana de la Moda. Fotógrafos, diseñadores y alfombra roja. Todo lo que hiciste te trajo hasta acá.`,
+    choices:()=>[{t:'Elegir el look de mi vida', n:'Evento final: Elegante y Fiesta', event:'gala'}]},
+};
+
+function ending(){
+  const f = S.flags, p = f.path;
+  if(p==='marca' && S.fame>=9) return {t:'Tu propia marca', d:`La línea de ${N()} ya se vende en tres países. Lo que empezó con una valija casi vacía hoy es una marca con tu nombre.`};
+  if(p==='influencer' && S.fame>=9) return {t:'Ícono de las redes', d:`Millones de personas esperan tu próximo look. Las marcas te mandan ropa antes de que salga a la venta.`};
+  if(p==='asistente' && (f.valentina || f.escuela)) return {t:'Directora creativa', d:`Valentina Roux se retira y te deja al frente de su casa de moda. Nadie lo duda: te lo ganaste.`};
+  if(S.money>=1500) return {t:'Éxito en los negocios', d:`Supiste manejar la plata como nadie. Hoy tenés tu propio local y una cuenta bancaria que da envidia.`};
+  if(S.mood>=8) return {t:'Una vida feliz', d:`Quizás no sos la persona más famosa de la ciudad, pero tenés gente que te quiere y te levantás con ganas cada mañana.`};
+  if(S.fame>=8) return {t:'Cara conocida', d:`Te reconocen por la calle y te invitan a todos los eventos. El próximo paso depende de vos.`};
+  return {t:'Esto recién empieza', d:`Todavía no llegaste a la cima, pero aprendiste muchísimo. La ciudad sigue ahí, esperando tu próximo movimiento.`};
+}
+
+function newChapter(n){
+  S.chapter = n; S.energy = MAXE;
+  const pay = JOBS[S.job]?.pay||0, rent = HOMES[S.home]?.rent||0;
+  S.money += pay - rent;
+  if(S.flags.escuela) S.fame += 1;
+  S.notice = `Capítulo nuevo. ${pay?`Cobraste $${pay}`:'Este capítulo no cobraste sueldo'}${rent?` y pagaste $${rent} de alquiler`:''}.${S.flags.escuela?' Tus profes de diseño te recomiendan: +1 fama.':''} Tu energía se recargó.`;
+}
+function enterScene(id){
+  if(id==='final'){ S.scene='final'; S.done=true; return; }
+  const sc = SCENES[id];
+  if(sc.ch > S.chapter) newChapter(sc.ch);
+  S.scene = id;
+}
+function goScene(target){
+  if(target.startsWith('HUB:')){ S.pending = target.slice(4); S.scene = 'hub'; }
+  else enterScene(target);
+  view = null; save(); render(); scrollTop();
+}
+const scrollTop = () => document.getElementById('main').scrollTo(0,0);
+
+/* ---------- Pantallas ---------- */
+function rStats(){
+  const h = document.getElementById('stats');
+  if(S.scene==='setup'){ h.innerHTML=''; return; }
+  h.innerHTML = `<span class="chip money ${S.money<0?'neg':''}" aria-label="Dinero">$ ${S.money}</span><span class="chip fame" aria-label="Fama">★ ${S.fame} fama</span><span class="chip mood" aria-label="Ánimo">♥ ${S.mood}/10</span>`;
+}
+const stage = (w, sm) => `<div class="stage ${sm?'sm':''}">${avatar(w||S.wear, S.skin)}</div>`;
+const chapLabel = () => `<div class="eyebrow">Capítulo ${S.chapter} · ${CH[S.chapter]}</div>`;
+
+function rSetup(){
+  return `<div class="stack" style="padding-top:12px">
+    <div class="eyebrow">Una historia de moda</div>
+    <h1>Vida en Pasarela</h1>
+    <p class="muted">Tomá decisiones, resolvé puzzles para ganar plata y armá los looks que te van a llevar a la cima.</p>
+  </div>
+  <div id="prev">${stage(null,true)}</div>
+  <div class="stack">
+    <label class="lbl" for="nombre">¿Cómo se llama tu personaje?</label>
+    <input type="text" id="nombre" maxlength="16" placeholder="Escribí un nombre" value="${esc(S.name)}" autocomplete="off">
+    <span class="lbl">Tono de piel</span>
+    <div class="skins">${SKINS.map((c,i)=>`<button class="swatch ${S.skin===i?'on':''}" style="background:${c}" data-act="skin" data-v="${i}" aria-label="Tono ${i+1}"></button>`).join('')}</div>
+    <button class="btn primary" id="startBtn" data-act="start" ${S.name.trim()?'':'disabled'}>Empezar mi historia</button>
+  </div>`;
+}
+
+function rStory(){
+  const sc = SCENES[S.scene];
+  const ch = sc.choices();
+  return `${chapLabel()}
+    ${S.notice?`<div class="notice">${S.notice}</div>`:''}
+    ${stage(null,true)}
+    <p class="story">${sc.text()}</p>
+    <div class="choices">${ch.map((c,i)=>{const ok=!c.req||c.req();return `<button class="btn" data-act="choice" data-v="${i}" ${ok?'':'disabled'}>${c.t}${c.n||!ok?`<span class="note">${!ok?c.why+' · ':''}${c.n||''}</span>`:''}</button>`;}).join('')}</div>`;
+}
+
+function rHub(){
+  const pips = Array.from({length:MAXE},(_,i)=>`<span class="pip ${i<S.energy?'on':''}"></span>`).join('');
+  const reset = ui.resetAsk
+    ? `<button class="btn ghost" data-act="resetYes">Sí, borrar todo y empezar de nuevo</button><button class="linkbtn" data-act="resetNo">Mejor no</button>`
+    : `<button class="linkbtn" data-act="reset">Empezar una historia nueva</button>`;
+  if(S.done) return `<div class="eyebrow">Modo libre</div><h2>Tu vida sigue</h2>${stage()}
+    <div class="info"><span class="pips">Energía ${pips}</span><span class="muted">${JOBS[S.job]?.name||''}</span></div>
+    <div class="row"><button class="btn" data-act="view" data-v="puzzles">Trabajos extra<span class="note">Puzzles por plata</span></button><button class="btn" data-act="view" data-v="closet">Vestidor<span class="note">Ropa y tienda</span></button></div>
+    <button class="btn" data-act="sleep">Dormir<span class="note">Empieza un día nuevo y se recarga la energía</span></button>
+    <button class="btn ghost" data-act="showEnd">Ver mi final otra vez</button>${reset}`;
+  return `${chapLabel()}<h2>Tu tiempo libre</h2>
+    ${S.notice?`<div class="notice">${S.notice}</div>`:''}
+    ${stage()}
+    <div class="info"><span class="pips">Energía ${pips}</span><span class="muted">${JOBS[S.job]?.name||''} · ${HOMES[S.home]?.name||''}</span></div>
+    <div class="row"><button class="btn" data-act="view" data-v="puzzles">Trabajos extra<span class="note">Puzzles por plata</span></button><button class="btn" data-act="view" data-v="closet">Vestidor<span class="note">Ropa y tienda</span></button></div>
+    <button class="btn primary" data-act="cont">Seguir la historia</button>
+    ${reset}`;
+}
+
+function rCloset(){
+  const ev = S.scene==='event' ? EVENTS[S.event] : null;
+  const tab = TABS.find(t=>t.id===ui.tab);
+  const shop = ui.mode==='shop';
+  const list = ITEMS.filter(i=>tab.slots.includes(i.slot) && (shop ? !S.owned.includes(i.id) : S.owned.includes(i.id)));
+  const w = {...S.wear}; if(ui.tryOn) applyWear(w, IT[ui.tryOn]);
+  const worn = id => { const it=IT[id]; return it.slot==='dress' ? w.dress===id : (it.slot==='top'||it.slot==='bottom') ? (!w.dress && w[it.slot]===id) : w[it.slot]===id; };
+  const card = it => {
+    const bg = it.color || 'var(--soft2)';
+    return `<button class="item ${worn(it.id)?'on':''}" data-act="item" data-v="${it.id}">
+      <span class="sw" style="background:${bg}">${it.ic}</span>
+      <span class="nm">${it.name}</span>
+      ${it.tags.length?`<span class="tags">${it.tags.map(t=>`<span class="tag ${ev&&ev.themes.includes(t)?'hit':''}">${TAGN[t]}</span>`).join('')}</span>`:''}
+      ${shop?`<span class="pr">$${price(it)}</span>`:''}
+    </button>`;
+  };
+  const tryIt = ui.tryOn ? IT[ui.tryOn] : null;
+  return `${ev?`<div class="banner"><span class="eyebrow">Evento de moda</span><strong>${ev.title}</strong><span class="tiny">${ev.hint} Los estilos que suman están marcados.</span></div>`:'<h2>Vestidor</h2>'}
+    ${stage(w,true)}
+    <div class="seg"><button class="${!shop?'on':''}" data-act="mode" data-v="mine">Mis cosas</button><button class="${shop?'on':''}" data-act="mode" data-v="shop">Tienda${S.job==='tienda'?' −20%':''}</button></div>
+    <div class="tabs">${TABS.map(t=>`<button class="tab ${t.id===ui.tab?'on':''}" data-act="tab" data-v="${t.id}">${t.label}</button>`).join('')}</div>
+    ${list.length?`<div class="grid">${list.map(card).join('')}</div>`:`<div class="empty">${shop?'Ya compraste todo lo de esta sección.':'Todavía no tenés nada acá. Mirá la tienda.'}</div>`}
+    <div class="buybar">
+      ${tryIt?`<button class="btn primary" data-act="buy" ${S.money>=price(tryIt)?'':'disabled'}>Comprar ${tryIt.name} · $${price(tryIt)}${S.money>=price(tryIt)?'':`<span class="note">Te faltan $${price(tryIt)-S.money}. Hacé trabajos extra.</span>`}</button>`:''}
+      ${ev?`<button class="btn ${tryIt?'':'primary'}" data-act="ready" style="text-align:center">¡Listo, voy así!</button>`:`<button class="btn ghost" data-act="back">Volver</button>`}
+    </div>`;
+}
+
+function rResult(){
+  const r = S.result;
+  return `<div class="eyebrow">${r.title}</div>
+    ${stage(null,true)}
+    <div class="stars" aria-label="${r.stars} de 5 estrellas">${'★'.repeat(r.stars)}<span class="off">${'★'.repeat(5-r.stars)}</span></div>
+    <p class="story">${r.text}</p>
+    <div class="fb">
+      ${r.good.length?`<div><b>Lo que más gustó:</b> ${r.good.join(', ')}</div>`:''}
+      ${r.bad.length?`<div><b>No iba con el estilo:</b> ${r.bad.join(', ')}</div>`:''}
+    </div>
+    <button class="btn primary" data-act="resultNext">Continuar</button>`;
+}
+
+function rFinal(){
+  const e = ending();
+  return `<div class="ending"><span class="eyebrow">Tu final</span><h2>${e.t}</h2><p>${e.d}</p></div>
+    ${stage()}
+    <div class="info" style="font-weight:800"><span style="color:var(--gold)">$ ${S.money}</span><span style="color:var(--accent)">★ ${S.fame} fama</span><span style="color:var(--mint)">♥ ${S.mood}/10 ánimo</span></div>
+    <p class="muted tiny">Hay 7 finales distintos. Probá otros caminos: otra casa, otro trabajo u otra propuesta en el capítulo 3.</p>
+    <button class="btn primary" data-act="free">Seguir jugando en modo libre</button>
+    <button class="btn ghost" data-act="resetYes">Jugar una historia nueva</button>`;
+}
+
+/* ---------- Puzzles ---------- */
+const PUZ = {
+  memoria:{name:'Memoria fashion', ic:'🃏', d:'Encontrá las 6 parejas antes de que se termine el tiempo.', max:'hasta $130'},
+  palabras:{name:'Palabras de moda', ic:'🔤', d:'Ordená las letras para formar palabras del mundo de la moda.', max:'hasta $200'},
+  vidriera:{name:'La vidriera', ic:'🛍️', d:'Mirá en qué orden se iluminan las prendas y repetilo.', max:'hasta $250'},
+};
+const WORDS = ['VESTIDO','CARTERA','TACOS','PASARELA','GLITTER','BUFANDA','LABIAL','CAMPERA','POLLERA','SANDALIA','COLLAR','PERFUME','MODELO','DISEÑO','BOTAS','TAPADO','ESTILO','COSTURA','VIDRIERA','MAQUILLAJE','DESFILE','PULSERA'];
+const ICONS = ['👗','👠','👜','💄','🕶️','👒','💍','👢'];
+
+function rPuzzles(){
+  return `<h2>Trabajos extra</h2>
+    <div class="info"><span class="pips">Energía ${Array.from({length:MAXE},(_,i)=>`<span class="pip ${i<S.energy?'on':''}"></span>`).join('')}</span><span class="muted">Cada trabajo usa 1 de energía</span></div>
+    ${S.energy<=0?`<div class="notice">No te queda energía. ${S.done?'Andá a dormir para empezar un día nuevo.':'Seguí la historia: en el próximo capítulo se recarga.'}</div>`:''}
+    <div class="stack">${Object.entries(PUZ).map(([k,p])=>`<button class="btn" data-act="puz" data-v="${k}" ${S.energy>0?'':'disabled'}><span class="pcard"><span class="ic">${p.ic}</span><span>${p.name}<span class="note">${p.d} Pagan ${p.max}.</span></span></span></button>`).join('')}</div>
+    <button class="btn ghost" data-act="back">Volver</button>`;
+}
+
+function clearP(){ if(!P) return; clearInterval(P.timer); (P.tos||[]).forEach(clearTimeout); }
+function later(fn,ms){ const t=setTimeout(fn,ms); P.tos.push(t); }
+function tick(){ P.timer=setInterval(()=>{ if(P.over) return; P.time--; if(P.time<=0){ P.time=0; endPuzzle(); } else render(); },1000); }
+
+function startPuzzle(k){
+  if(S.energy<=0) return;
+  S.energy--; save();
+  if(k==='memoria'){
+    const pool = shuffle(ICONS).slice(0,6);
+    P = {k, cards:shuffle([...pool,...pool]).map(e=>({e,open:false,done:false})), first:null, lock:false, time:45, matched:0, tos:[]};
+    tick();
+  }
+  if(k==='palabras'){
+    P = {k, words:shuffle(WORDS).slice(0,5), idx:0, time:75, earned:0, solved:0, tos:[]};
+    setWord(); tick();
+  }
+  if(k==='vidriera'){
+    P = {k, len:3, seq:[], input:[], phase:'show', lit:-1, rounds:0, earned:0, tos:[]};
+    later(newRound,500);
+  }
+  view='puzzle'; render(); scrollTop();
+}
+function setWord(){
+  const w = P.words[P.idx]; let mix;
+  do { mix = shuffle(w.split('')); } while(mix.join('')===w);
+  P.letters = mix.map(ch=>({ch,used:false})); P.picked=[]; P.flash=null;
+}
+function newRound(){
+  P.seq = Array.from({length:P.len},()=>Math.floor(Math.random()*6)); P.input=[]; P.phase='show'; render();
+  P.seq.forEach((v,k)=>{ later(()=>{P.lit=v;render();}, 300+k*750); later(()=>{P.lit=-1;render();}, 300+k*750+520); });
+  later(()=>{P.phase='input';render();}, 300+P.seq.length*750);
+}
+function endPuzzle(){
+  if(!P || P.over) return;
+  clearP();
+  let pay = 0;
+  if(P.k==='memoria') pay = P.matched*12 + (P.matched===6 ? P.time*2 : 0);
+  if(P.k==='palabras') pay = P.earned + (P.solved===P.words.length ? P.time : 0);
+  if(P.k==='vidriera') pay = P.earned;
+  pay = Math.min(pay, P.k==='memoria'?130:P.k==='palabras'?200:250);
+  P.over = true; P.pay = pay; S.money += pay; save(); render();
+}
+function rPuzzle(){
+  const meta = PUZ[P.k];
+  if(P.over) return `<div class="stack center" style="padding-top:20px"><div class="eyebrow">${meta.name}</div><span style="font-size:3rem">${meta.ic}</span>
+    <div class="big">+$${P.pay}</div><p class="muted">${P.pay>=100?'¡Excelente trabajo!':P.pay>0?'Bien ahí, sumaste algo de plata.':'Esta vez no salió. ¡La próxima seguro!'}</p></div>
+    <button class="btn primary" data-act="puzBack">Volver</button>`;
+  let body = '';
+  if(P.k==='memoria') body = `<div class="ptop"><span>Parejas ${P.matched}/6</span><span class="timer">${P.time} s</span></div>
+    <div class="mem">${P.cards.map((c,i)=>`<button class="card ${c.open||c.done?'up':''} ${c.done?'done':''}" data-act="mem" data-v="${i}" aria-label="Carta ${i+1}">${c.open||c.done?c.e:''}</button>`).join('')}</div>`;
+  if(P.k==='palabras'){
+    const w = P.words[P.idx];
+    body = `<div class="ptop"><span>Palabra ${P.idx+1}/${P.words.length} · $${P.earned}</span><span class="timer">${P.time} s</span></div>
+      <div class="slots ${P.flash||''}">${w.split('').map((_,i)=>{const pi=P.picked[i];return pi!==undefined?`<button class="tile slot full" data-act="wp" data-v="${i}">${P.letters[pi].ch}</button>`:`<span class="tile slot"></span>`;}).join('')}</div>
+      <div class="letters">${P.letters.map((l,i)=>`<button class="tile ${l.used?'used':''}" data-act="wl" data-v="${i}" ${l.used?'disabled':''}>${l.ch}</button>`).join('')}</div>
+      <div class="row"><button class="btn ghost" data-act="wclear">Borrar</button><button class="btn ghost" data-act="wskip">Saltar</button></div>`;
+  }
+  if(P.k==='vidriera') body = `<div class="ptop"><span>${P.phase==='show'?'Mirá la vidriera…':`Repetí el orden: ${P.input.length}/${P.seq.length}`}</span><span>$${P.earned}</span></div>
+    <div class="vid">${ICONS.slice(0,6).map((e,i)=>`<button class="${P.lit===i?'lit':''}" data-act="vid" data-v="${i}" ${P.phase==='input'?'':'disabled'} aria-label="Prenda ${i+1}">${e}</button>`).join('')}</div>
+    <p class="muted tiny">Ronda de ${P.len} prendas. Cada ronda que acertás suma más plata.</p>`;
+  return `<div class="eyebrow">Trabajo extra</div><h2>${meta.name}</h2>${body}<button class="linkbtn" data-act="puzQuit">Terminar y cobrar lo que llevo</button>`;
+}
+
+/* ---------- Render y acciones ---------- */
+function render(){
+  rStats();
+  const m = document.getElementById('main');
+  let html;
+  if(view==='puzzle' && P) html = rPuzzle();
+  else if(view==='puzzles') html = rPuzzles();
+  else if(view==='closet' || S.scene==='event') html = rCloset();
+  else if(S.scene==='setup') html = rSetup();
+  else if(S.scene==='hub') html = rHub();
+  else if(S.scene==='result') html = rResult();
+  else if(S.scene==='final') html = rFinal();
+  else html = rStory();
+  m.innerHTML = html;
+}
+
+const ACT = {
+  skin:v=>{ S.skin=+v; document.querySelectorAll('.swatch').forEach((b,i)=>b.classList.toggle('on',i===S.skin)); document.getElementById('prev').innerHTML=stage(null,true); },
+  start:()=>{ if(!S.name.trim()) return; S.name=S.name.trim(); enterScene('c1_llegada'); save(); render(); scrollTop(); },
+  choice:v=>{
+    const c = SCENES[S.scene].choices()[+v]; if(c.req && !c.req()) return;
+    S.notice = null; applyFx(c.fx); c.set && c.set();
+    if(c.event){ S.event=c.event; S.scene='event'; ui.tryOn=null; ui.mode='mine'; ui.tab='ropa'; save(); render(); scrollTop(); return; }
+    goScene(c.go);
+  },
+  cont:()=>{ S.notice=null; const p=S.pending; S.pending=null; goScene(p); },
+  view:v=>{ view=v; ui.tryOn=null; ui.mode='mine'; render(); scrollTop(); },
+  back:()=>{ view=null; ui.tryOn=null; render(); scrollTop(); },
+  tab:v=>{ ui.tab=v; ui.tryOn=null; render(); },
+  mode:v=>{ ui.mode=v; ui.tryOn=null; render(); },
+  item:v=>{
+    const it = IT[v];
+    if(S.owned.includes(v)){ applyWear(S.wear,it); ui.tryOn=null; save(); }
+    else ui.tryOn = ui.tryOn===v ? null : v;
+    render();
+  },
+  buy:()=>{
+    const it = IT[ui.tryOn]; if(!it) return; const p = price(it);
+    if(S.money < p) return;
+    S.money -= p; S.owned.push(it.id); applyWear(S.wear,it); ui.tryOn=null; save();
+    toast(`Compraste ${it.name} · −$${p}`); render();
+  },
+  ready:()=>{
+    const ev = EVENTS[S.event]; const sc = scoreOutfit(ev.themes); const r = ev.result(sc.stars);
+    applyFx(r.fx);
+    S.result = {title:ev.title, stars:sc.stars, good:sc.good, bad:sc.bad, text:r.text, next:ev.next};
+    S.scene='result'; S.event=null; ui.tryOn=null; view=null; save(); render(); scrollTop();
+  },
+  resultNext:()=>{ const n=S.result.next; S.result=null; goScene(n); },
+  puz:v=>startPuzzle(v),
+  puzQuit:()=>endPuzzle(),
+  puzBack:()=>{ P=null; view='puzzles'; render(); scrollTop(); },
+  mem:v=>{
+    const i=+v, c=P.cards[i]; if(P.over||P.lock||c.open||c.done) return;
+    c.open=true;
+    if(P.first===null){ P.first=i; render(); return; }
+    const a=P.cards[P.first]; P.first=null;
+    if(a.e===c.e){ a.done=c.done=true; a.open=c.open=false; P.matched++; render(); if(P.matched===6) later(endPuzzle,400); }
+    else { P.lock=true; render(); later(()=>{ a.open=c.open=false; P.lock=false; render(); },700); }
+  },
+  wl:v=>{
+    const w=P.words[P.idx], l=P.letters[+v]; if(P.over||l.used||P.flash) return;
+    l.used=true; P.picked.push(+v);
+    if(P.picked.length===w.length){
+      const guess = P.picked.map(i=>P.letters[i].ch).join('');
+      if(guess===w){ P.flash='ok'; P.solved++; P.earned+=30; render(); later(nextWord,600); }
+      else { P.flash='bad'; render(); later(()=>{ P.letters.forEach(x=>x.used=false); P.picked=[]; P.flash=null; render(); },600); }
+    } else render();
+  },
+  wp:v=>{ if(P.flash) return; const i=+v; const removed=P.picked.splice(i); removed.forEach(pi=>P.letters[pi].used=false); render(); },
+  wclear:()=>{ if(P.flash) return; P.letters.forEach(x=>x.used=false); P.picked=[]; render(); },
+  wskip:()=>{ if(P.flash) return; nextWord(); },
+  vid:v=>{
+    if(P.phase!=='input') return; const i=+v;
+    if(P.seq[P.input.length]===i){
+      P.input.push(i); P.lit=i; render(); later(()=>{P.lit=-1;render();},200);
+      if(P.input.length===P.seq.length){ P.phase='wait'; P.rounds++; P.earned+=P.len*10; P.len++; toast(`¡Bien! +$${(P.len-1)*10}`); if(P.len>7) later(endPuzzle,500); else later(newRound,900); }
+    } else { P.phase='wait'; toast('¡Uy! Ese no era'); later(endPuzzle,700); }
+  },
+  sleep:()=>{ S.energy=MAXE; S.mood=Math.min(10,S.mood+1); save(); toast('Día nuevo · energía al máximo'); render(); },
+  showEnd:()=>{ S.scene='final'; save(); render(); scrollTop(); },
+  free:()=>{ S.scene='hub'; S.pending=null; save(); render(); scrollTop(); },
+  reset:()=>{ ui.resetAsk=true; render(); },
+  resetNo:()=>{ ui.resetAsk=false; render(); },
+  resetYes:()=>{ clearP(); P=null; view=null; ui={tab:'ropa',mode:'mine',tryOn:null,resetAsk:false}; S=fresh(); save(); render(); scrollTop(); },
+};
+function nextWord(){ P.idx++; if(P.idx>=P.words.length) endPuzzle(); else { setWord(); render(); } }
+
+document.addEventListener('click', e=>{
+  const b = e.target.closest('[data-act]'); if(!b || b.disabled) return;
+  ACT[b.dataset.act]?.(b.dataset.v, b);
+});
+document.addEventListener('input', e=>{
+  if(e.target.id==='nombre'){ S.name=e.target.value; const sb=document.getElementById('startBtn'); if(sb) sb.disabled=!S.name.trim(); }
+});
+
+function boot(data){
+  S = (data && data.S) ? Object.assign(fresh(), data.S) : (load() || fresh());
+  render();
+}
+try { window.claude?.hot?.snapshot?.(()=>({S})); } catch(e){}
+if(window.claude?.hot?.ready) window.claude.hot.ready(boot); else boot(window.claude?.hot?.data ?? {});
+</script>
