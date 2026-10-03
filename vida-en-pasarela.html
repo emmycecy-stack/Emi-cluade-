@@ -1,11 +1,12 @@
 <title>Vida en Pasarela</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500..900;1,6..96,500..900&family=Nunito:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500..900;1,6..96,500..900&family=Nunito:wght@500;700;800;900&display=swap">
 <style>
-/* Layout: una sola columna tipo app de celular; arriba los números, al centro el escenario con tu personaje, abajo las decisiones. */
+/* Layout: app de una columna; arriba los números, al centro un escenario ilustrado con tu personaje, abajo las decisiones. */
 :root{
   --bg:#F7F1F8; --surface:#FFFFFF; --ink:#2A1838; --muted:#76627F; --line:#E5D6EA;
-  --accent:#C81D6B; --accent-ink:#FFFFFF; --gold:#9A6E0C; --mint:#1C7F67; --soft:#F1DDEC; --soft2:#E9E1F7;
+  --accent:#C81D6B; --accent-ink:#FFFFFF; --gold:#9A6E0C; --mint:#1C7F67; --soft:#F1DDEC; --soft2:#ECE4F7;
+  --shadow:0 10px 30px -14px rgba(60,20,70,.35);
   --display:'Bodoni Moda', Didot, 'Bodoni 72', Georgia, serif;
   --body:'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
@@ -13,116 +14,187 @@
   :root:not([data-theme="light"]){
     --bg:#170E1C; --surface:#23162B; --ink:#F6ECF8; --muted:#B9A3C2; --line:#3A2944;
     --accent:#FF5C9F; --accent-ink:#1A0E1F; --gold:#E7B84B; --mint:#4FD1AE; --soft:#3A2040; --soft2:#2A2142;
+    --shadow:0 10px 30px -14px rgba(0,0,0,.7);
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --bg:#170E1C; --surface:#23162B; --ink:#F6ECF8; --muted:#B9A3C2; --line:#3A2944;
   --accent:#FF5C9F; --accent-ink:#1A0E1F; --gold:#E7B84B; --mint:#4FD1AE; --soft:#3A2040; --soft2:#2A2142;
+  --shadow:0 10px 30px -14px rgba(0,0,0,.7);
   color-scheme:dark;
 }
 *{box-sizing:border-box}
 html{height:100%;box-sizing:border-box}
-body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;-webkit-tap-highlight-color:transparent}
-#app{max-width:480px;margin:0 auto;height:100%;display:flex;flex-direction:column}
-header{display:flex;gap:8px;flex-wrap:wrap;padding:10px 16px 6px}
-.chip{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:800;font-size:14px;font-variant-numeric:tabular-nums}
+body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;-webkit-tap-highlight-color:transparent;overflow:hidden}
+#app{max-width:480px;margin:0 auto;height:100%;display:flex;flex-direction:column;position:relative}
+header{display:flex;gap:6px;align-items:center;padding:10px 16px 6px}
+.mono{font-family:var(--display);font-style:italic;font-weight:900;font-size:20px;color:var(--accent);margin-right:auto;letter-spacing:-.02em}
+.chip{display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:900;font-size:13.5px;font-variant-numeric:tabular-nums;box-shadow:var(--shadow)}
+.chip svg{width:15px;height:15px}
 .chip.money{color:var(--gold)} .chip.mood{color:var(--mint)} .chip.fame{color:var(--accent)}
 .chip.neg{color:#D23A3A}
+.chip.bump{animation:bump .5s ease}
+@keyframes bump{40%{transform:scale(1.18)}}
 main{flex:1;overflow-y:auto;padding:6px 16px 28px;display:flex;flex-direction:column;gap:14px}
 main>*{flex-shrink:0}
-h1,h2{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.08}
-h1{font-size:2.6rem;font-style:italic;font-weight:800;letter-spacing:-.01em}
-h2{font-size:1.65rem;font-weight:700}
-.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.14em;font-weight:800;color:var(--accent)}
+main.enter>*{animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
+main.enter>*:nth-child(2){animation-delay:.05s} main.enter>*:nth-child(3){animation-delay:.1s} main.enter>*:nth-child(4){animation-delay:.15s} main.enter>*:nth-child(n+5){animation-delay:.2s}
+@keyframes rise{from{opacity:.001;transform:translateY(12px)}}
+h1,h2{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.05}
+h1{font-size:2.9rem;font-style:italic;font-weight:900;letter-spacing:-.02em}
+h2{font-size:1.7rem;font-weight:800}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.16em;font-weight:900;color:var(--accent)}
 .muted{color:var(--muted)}
 p{margin:0}
-.stage{position:relative;border-radius:22px;background:radial-gradient(120% 90% at 50% 100%,var(--soft) 0%,var(--soft2) 55%,var(--bg) 100%);display:flex;justify-content:center;align-items:flex-end;height:250px;overflow:hidden;flex-shrink:0}
-.stage.sm{height:200px}
-.stage svg{height:96%;width:auto;max-width:100%}
-.stage::after{content:"";position:absolute;left:20%;right:20%;bottom:6px;height:10px;border-radius:50%;background:var(--ink);opacity:.08}
+
+/* Escenario */
+.stage{position:relative;border-radius:26px;height:280px;overflow:hidden;box-shadow:var(--shadow);isolation:isolate}
+.stage.sm{height:236px}
+.stage.lg{height:330px}
+.stage .bg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.stage .fig{position:absolute;left:0;right:0;top:10px;bottom:2px;display:flex;justify-content:center;pointer-events:none}
+.stage .fig svg{height:100%;width:auto;max-width:100%;filter:drop-shadow(0 6px 8px rgba(30,10,40,.25))}
+.stage.pop .fig{animation:popfig .6s ease}
+@keyframes popfig{30%{transform:scale(1.04)}}
+.stage .shine{position:absolute;inset:0;pointer-events:none}
+.av .breathe{animation:breathe 4.5s ease-in-out infinite;transform-origin:100px 390px}
+@keyframes breathe{50%{transform:scaleY(1.008) translateY(-.6px)}}
+.av .eyes{animation:blink 5.5s infinite;transform-box:fill-box;transform-origin:center}
+@keyframes blink{0%,95%,100%{transform:scaleY(1)}97%{transform:scaleY(.08)}}
+.bg .tw{animation:tw 2.4s ease-in-out infinite}
+.bg .tw:nth-of-type(3n){animation-delay:.8s} .bg .tw:nth-of-type(3n+1){animation-delay:1.6s}
+@keyframes tw{50%{opacity:.35}}
+.bg .flash{opacity:0;animation:flash 3.2s infinite}
+@keyframes flash{0%,88%,100%{opacity:0}90%{opacity:1}94%{opacity:0}}
+.bg .beam{animation:sway 6s ease-in-out infinite;transform-origin:top center;transform-box:fill-box}
+@keyframes sway{50%{transform:rotate(6deg)}}
+
+/* Historia */
+.say{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px;box-shadow:var(--shadow)}
+.say .face{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:4px;width:64px}
+.say .face .pic{width:60px;height:60px;border-radius:50%;overflow:hidden;background:var(--soft);border:2px solid var(--accent)}
+.say .face .pic svg{width:100%;height:100%;display:block}
+.say .face span{font-size:11px;font-weight:900;text-align:center;line-height:1.1;color:var(--accent)}
+.say p{min-width:0}
 .story{font-size:1.06rem;max-width:65ch}
 .story b{color:var(--accent)}
-.notice{background:var(--surface);border:1px dashed var(--accent);border-radius:14px;padding:10px 14px;font-size:14px;font-weight:700}
+.notice{background:var(--surface);border:1.5px dashed var(--accent);border-radius:16px;padding:10px 14px;font-size:14px;font-weight:700}
 .choices,.stack{display:flex;flex-direction:column;gap:10px}
-.btn{display:block;width:100%;padding:13px 16px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:800;text-align:left;cursor:pointer;transition:transform .08s ease,border-color .15s}
+.btn{display:block;width:100%;padding:14px 16px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:900;text-align:left;cursor:pointer;transition:transform .1s ease,border-color .15s,box-shadow .15s;box-shadow:var(--shadow)}
 .btn:active{transform:scale(.98)}
-.btn .note{display:block;font-weight:600;color:var(--muted);font-size:13px;margin-top:2px}
-.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);text-align:center;font-size:1.05rem}
+.btn:hover{border-color:var(--accent)}
+.btn .note{display:block;font-weight:700;color:var(--muted);font-size:13px;margin-top:2px}
+.btn.primary{background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 70%,#7a2bd6));color:var(--accent-ink);border-color:transparent;text-align:center;font-size:1.06rem}
 .btn.primary .note{color:var(--accent-ink);opacity:.85}
-.btn.ghost{background:transparent;text-align:center}
+.btn.ghost{background:transparent;text-align:center;box-shadow:none}
 .btn:disabled{opacity:.42;cursor:not-allowed}
-.btn:focus-visible,.item:focus-visible,.tab:focus-visible,.card:focus-visible,.tile:focus-visible,.swatch:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn.ico{display:flex;gap:12px;align-items:center}
+.btn.ico .ic{width:46px;height:46px;flex-shrink:0;border-radius:14px;background:var(--soft);display:grid;place-items:center}
+.btn.ico .ic svg{width:34px;height:34px}
+.btn:focus-visible,.item:focus-visible,.tab:focus-visible,.card:focus-visible,.tile:focus-visible,.swatch:focus-visible,.seg button:focus-visible,.vid button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.pips{display:flex;gap:6px;align-items:center;font-weight:800;font-size:14px}
+.pips{display:flex;gap:6px;align-items:center;font-weight:900;font-size:14px}
 .pip{width:14px;height:14px;border-radius:50%;border:2px solid var(--accent)}
-.pip.on{background:var(--accent)}
+.pip.on{background:var(--accent);box-shadow:0 0 8px var(--accent)}
 .info{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:14px}
-label.lbl{font-weight:800;font-size:14px}
+label.lbl,.lbl{font-weight:900;font-size:14px}
 input[type=text]{width:100%;font:inherit;font-size:1.1rem;padding:12px 14px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
 input[type=text]:focus{outline:3px solid var(--accent);outline-offset:1px}
 .skins{display:flex;gap:10px;flex-wrap:wrap}
 .swatch{width:44px;height:44px;border-radius:50%;border:3px solid var(--surface);box-shadow:0 0 0 1.5px var(--line);cursor:pointer}
 .swatch.on{box-shadow:0 0 0 3px var(--accent)}
-.banner{background:var(--ink);color:var(--bg);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
-.banner .eyebrow{color:var(--bg);opacity:.75}
-.banner strong{font-family:var(--display);font-size:1.3rem;font-style:italic}
-.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:4px;gap:4px}
-.seg button{font:inherit;font-weight:800;border:0;border-radius:10px;padding:9px;background:transparent;color:var(--muted);cursor:pointer}
+
+/* Vestidor */
+.banner{background:linear-gradient(135deg,#2A1838,#5B1E52);color:#FCEFF7;border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;box-shadow:var(--shadow)}
+.banner .eyebrow{color:#FFB3D3}
+.banner strong{font-family:var(--display);font-size:1.4rem;font-style:italic}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:4px;gap:4px}
+.seg button{font:inherit;font-weight:900;border:0;border-radius:12px;padding:9px;background:transparent;color:var(--muted);cursor:pointer}
 .seg button.on{background:var(--accent);color:var(--accent-ink)}
 .tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
-.tab{flex-shrink:0;font:inherit;font-weight:800;font-size:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 14px;cursor:pointer}
+.tab{flex-shrink:0;font:inherit;font-weight:900;font-size:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 14px;cursor:pointer}
 .tab.on{border-color:var(--ink);background:var(--ink);color:var(--bg)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}
-.item{font:inherit;color:var(--ink);border-radius:16px;border:1.5px solid var(--line);background:var(--surface);padding:10px 8px;display:flex;flex-direction:column;gap:5px;align-items:center;text-align:center;cursor:pointer;min-width:0}
-.item.on{border-color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent)}
-.item .sw{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:22px;border:1px solid var(--line)}
-.item .nm{font-weight:800;font-size:13px;line-height:1.2}
-.item .pr{font-weight:800;font-size:13px;color:var(--gold);font-variant-numeric:tabular-nums}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.item{font:inherit;color:var(--ink);border-radius:18px;border:1.5px solid var(--line);background:var(--surface);padding:8px 8px 10px;display:flex;flex-direction:column;gap:5px;align-items:center;text-align:center;cursor:pointer;min-width:0;box-shadow:var(--shadow);transition:transform .1s}
+.item:active{transform:scale(.97)}
+.item.on{border-color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent),var(--shadow)}
+.item .th{width:100%;aspect-ratio:1;max-width:100%;border-radius:12px;background:radial-gradient(circle at 50% 40%,var(--surface),var(--soft2));display:flex;align-items:center;justify-content:center;overflow:hidden}
+.item .th svg{width:92%;height:92%}
+.item .nm{font-weight:900;font-size:13px;line-height:1.2}
+.item .pr{font-weight:900;font-size:13px;color:var(--gold);font-variant-numeric:tabular-nums}
 .tags{display:flex;gap:3px;flex-wrap:wrap;justify-content:center}
-.tag{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:2px 6px;border-radius:6px;background:var(--soft2);color:var(--muted)}
+.tag{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;padding:2px 6px;border-radius:6px;background:var(--soft2);color:var(--muted)}
 .tag.hit{background:var(--accent);color:var(--accent-ink)}
-.buybar{position:sticky;bottom:0;background:var(--bg);padding-top:8px;display:flex;flex-direction:column;gap:8px}
+.buybar{position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 22%);padding-top:14px;display:flex;flex-direction:column;gap:8px}
 .empty{padding:18px;text-align:center;border:1.5px dashed var(--line);border-radius:16px;color:var(--muted);font-weight:700}
-.stars{font-size:2.2rem;letter-spacing:.08em;color:var(--gold);line-height:1}
-.stars .off{opacity:.22}
+
+/* Resultados */
+.stars{display:flex;gap:6px;justify-content:center}
+.stars svg{width:46px;height:46px;animation:starpop .5s cubic-bezier(.3,1.6,.5,1) both}
+.stars svg:nth-child(2){animation-delay:.15s}.stars svg:nth-child(3){animation-delay:.3s}.stars svg:nth-child(4){animation-delay:.45s}.stars svg:nth-child(5){animation-delay:.6s}
+@keyframes starpop{from{transform:scale(0) rotate(-40deg);opacity:0}}
 .fb{display:flex;flex-direction:column;gap:6px;font-size:14px}
 .fb div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
-.pcard{display:flex;gap:12px;align-items:center}
-.pcard .ic{font-size:30px;width:52px;height:52px;border-radius:14px;background:var(--soft);display:grid;place-items:center;flex-shrink:0}
-.ptop{display:flex;justify-content:space-between;font-weight:800;font-variant-numeric:tabular-nums}
+.verdict{font-family:var(--display);font-style:italic;font-size:1.6rem;font-weight:800;text-align:center}
+
+/* Puzzles */
+.ptop{display:flex;justify-content:space-between;font-weight:900;font-variant-numeric:tabular-nums}
 .timer{color:var(--accent)}
-.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.card{aspect-ratio:3/4;max-width:100%;border-radius:12px;border:0;font-size:2rem;cursor:pointer;background:repeating-linear-gradient(45deg,var(--accent) 0 8px,color-mix(in srgb,var(--accent) 80%,var(--bg)) 8px 16px);transition:transform .2s}
-.card.up{background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line)}
-.card.done{opacity:.55}
+.bar{height:8px;border-radius:99px;background:var(--soft2);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#9B5CF6);transition:width 1s linear}
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;perspective:600px}
+.card{aspect-ratio:3/4;max-width:100%;border-radius:14px;border:0;padding:0;cursor:pointer;position:relative;background:transparent;transform-style:preserve-3d;transition:transform .35s}
+.card .f,.card .b{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;display:grid;place-items:center}
+.card .b{background:radial-gradient(circle at 50% 50%,#FF8CC0 0 18%,transparent 19%),repeating-linear-gradient(45deg,#C81D6B 0 7px,#A3155A 7px 14px);box-shadow:inset 0 0 0 3px rgba(255,255,255,.35)}
+.card .b::after{content:"VP";font-family:var(--display);font-style:italic;font-weight:900;color:#fff;font-size:15px}
+.card .f{background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);transform:rotateY(180deg)}
+.card .f svg{width:76%;height:76%}
+.card.up{transform:rotateY(180deg)}
+.card.done .f{background:color-mix(in srgb,var(--mint) 18%,var(--surface));box-shadow:inset 0 0 0 2px var(--mint)}
 .slots,.letters{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
-.tile{width:40px;height:48px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:800;font-size:1.3rem;cursor:pointer}
-.tile.slot{background:var(--soft2);border-style:dashed}
-.tile.slot.full{background:var(--surface);border-style:solid;border-color:var(--accent)}
+.tile{width:40px;height:50px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-family:var(--display);font-weight:900;font-size:1.45rem;cursor:pointer;box-shadow:0 3px 0 var(--line)}
+.tile.slot{background:var(--soft2);border-style:dashed;box-shadow:none}
+.tile.slot.full{background:var(--surface);border-style:solid;border-color:var(--accent);box-shadow:0 3px 0 var(--accent)}
 .tile.used{opacity:.2}
-.slots.ok .tile{border-color:var(--mint);color:var(--mint)}
+.slots.ok .tile{border-color:var(--mint);color:var(--mint);box-shadow:0 3px 0 var(--mint)}
+.slots.bad{animation:shake .4s}
 .slots.bad .tile{border-color:#D23A3A;color:#D23A3A}
-.vid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.vid button{aspect-ratio:1;max-width:100%;border-radius:18px;border:1.5px solid var(--line);background:var(--surface);font-size:2.4rem;cursor:pointer;transition:transform .12s,background .12s}
-.vid button.lit{background:var(--accent);transform:scale(1.06)}
-.vid button:disabled{cursor:default;opacity:1}
-.big{font-family:var(--display);font-size:2.4rem;font-weight:800;font-style:italic;color:var(--gold)}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.vid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:12px;border-radius:22px;background:linear-gradient(#3B1E4A,#24122E);box-shadow:inset 0 0 0 4px #D9A93A,var(--shadow)}
+.vid button{aspect-ratio:1;max-width:100%;border-radius:16px;border:0;background:rgba(255,255,255,.08);cursor:pointer;transition:transform .12s,background .12s,box-shadow .12s;display:grid;place-items:center}
+.vid button svg{width:70%;height:70%}
+.vid button.lit{background:#FFE7F2;transform:scale(1.07);box-shadow:0 0 24px #FF8CC0}
+.vid button:disabled{cursor:default}
+.big{font-family:var(--display);font-size:3rem;font-weight:900;font-style:italic;color:var(--gold)}
 .center{text-align:center;align-items:center}
-.ending{background:var(--ink);color:var(--bg);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:8px}
-.ending h2{font-style:italic;font-size:2rem}
-.ending .eyebrow{color:var(--bg);opacity:.7}
+.ending{background:linear-gradient(150deg,#2A1838,#6B1E55 60%,#B5245F);color:#FCEFF7;border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow)}
+.ending h2{font-style:italic;font-size:2.2rem}
+.ending .eyebrow{color:#FFB3D3}
 .tiny{font-size:13px}
 .linkbtn{font:inherit;font-weight:700;font-size:13px;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:6px;align-self:center}
-#toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:800;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:calc(100% - 32px);text-align:center}
+
+/* Capas */
+#toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:900;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:calc(100% - 32px);text-align:center;z-index:30}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+#chcard{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:radial-gradient(circle at 50% 40%,#5B1E52,#1A0E22 70%);color:#FCEFF7;text-align:center;padding:24px 16px;cursor:pointer;animation:chin .5s ease both}
+#chcard.out{animation:chout .5s ease both}
+#chcard .n{font-family:var(--display);font-style:italic;font-weight:900;font-size:5.5rem;line-height:1;color:#FF8CC0}
+#chcard .t{font-family:var(--display);font-size:2rem;font-weight:800;max-width:14ch;text-wrap:balance}
+#chcard .eyebrow{color:#FFB3D3}
+@keyframes chin{from{opacity:0;transform:scale(1.05)}}
+@keyframes chout{to{opacity:0;visibility:hidden}}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:25;width:100%;height:100%}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
 </style>
 
 <div id="app">
   <header id="stats"></header>
   <main id="main"></main>
 </div>
+<canvas id="fx"></canvas>
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -130,59 +202,61 @@ const SAVE = 'vida-en-pasarela-v1';
 const MAXE = 4;
 const SKINS = ['#F6D3B8','#E8B48F','#C68A5E','#8D5A3B','#5E3A26'];
 const TAGN = {casual:'Casual', elegante:'Elegante', fiesta:'Fiesta', rocker:'Rocker', deportivo:'Deportivo'};
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// slot, forma, nombre, color, precio, estilos, ícono, efecto
+// id, slot, forma, nombre, color, precio, estilos, efecto
 const ITEMS = [
-  ['t_remera_blanca','top','remera','Remera blanca','#F4F2F5',0,['casual','deportivo'],'👚'],
-  ['t_remera_negra','top','remera','Remera negra','#26222A',40,['casual','rocker'],'👚'],
-  ['t_buzo','top','buzo','Buzo celeste','#7FB7E6',80,['deportivo','casual'],'🧥'],
-  ['t_blusa_seda','top','blusa','Blusa de seda','#EED3C2',120,['elegante'],'👚'],
-  ['t_blusa_roja','top','blusa','Blusa roja','#C8283C',140,['elegante','fiesta'],'👚'],
-  ['t_crop_brillos','top','crop','Top de brillos','#B68FE8',150,['fiesta'],'✨','brillo'],
-  ['t_campera_cuero','top','campera','Campera de cuero','#1E1A1F',220,['rocker'],'🧥'],
-  ['b_jean','bottom','jean','Jean clásico','#4A6FA5',0,['casual','rocker'],'👖'],
-  ['b_short','bottom','short','Short de jean','#6C8FC7',60,['casual'],'🩳'],
-  ['b_calza','bottom','calza','Calza deportiva','#2B2B35',70,['deportivo'],'👖'],
-  ['b_pollera_negra','bottom','pollera','Pollera negra','#1E1A1F',90,['elegante','rocker'],'👗'],
-  ['b_pollera_lente','bottom','pollera','Pollera de lentejuelas','#E2B347',170,['fiesta'],'✨','brillo'],
-  ['d_floreado','dress','vestido','Vestido floreado','#F2A7B8',130,['casual'],'👗','flores'],
-  ['d_negro','dress','vestido','Vestidito negro','#141016',260,['elegante','fiesta'],'👗'],
-  ['d_brillos','dress','vestido','Vestido de brillos','#A9A6CF',320,['fiesta'],'👗','brillo'],
-  ['d_gala','dress','largo','Vestido de gala','#8E1B4C',480,['elegante'],'👗'],
-  ['s_zapa','shoes','zapa','Zapatillas blancas','#F4F2F5',0,['casual','deportivo'],'👟'],
-  ['s_sandalias','shoes','sandalias','Sandalias doradas','#D9A93A',110,['fiesta','elegante'],'👡'],
-  ['s_botas','shoes','botas','Borcegos','#2A2224',150,['rocker'],'🥾'],
-  ['s_tacos_negros','shoes','tacos','Tacos negros','#141016',160,['elegante','fiesta'],'👠'],
-  ['s_tacos_rojos','shoes','tacos','Stilettos rojos','#C8283C',240,['elegante','fiesta'],'👠'],
-  ['h_largo','hair','largo','Pelo largo','',0,['casual'],'💇'],
-  ['h_rodete','hair','rodete','Rodete','',50,['elegante'],'💇'],
-  ['h_bob','hair','bob','Corte bob','',60,['rocker'],'💇'],
-  ['h_ondas','hair','ondas','Ondas','',80,['fiesta'],'💇'],
-  ['hc_castano','hairColor','c','Castaño','#5A3825',0,[],''],
-  ['hc_negro','hairColor','c','Negro','#1C1416',40,[],''],
-  ['hc_rubio','hairColor','c','Rubio','#E2C27A',70,[],''],
-  ['hc_rojo','hairColor','c','Colorado','#B4412C',80,[],''],
-  ['hc_rosa','hairColor','c','Rosa','#F08AB5',90,[],''],
-  ['hc_violeta','hairColor','c','Violeta','#8D6BD6',90,[],''],
-  ['l_natural','lips','c','Labios naturales','#C98A7E',0,['casual','deportivo'],'💋'],
-  ['l_rosa','lips','c','Labial rosa','#E26A9A',30,['casual','fiesta'],'💋'],
-  ['l_rojo','lips','c','Labial rojo','#C2142E',45,['elegante'],'💋'],
-  ['l_bordo','lips','c','Labial bordó','#6E1430',45,['rocker','elegante'],'💋'],
-  ['e_nada','eyes','none','Sin sombra','',0,['casual','deportivo'],'👁️'],
-  ['e_rosa','eyes','c','Sombra rosa','#F0A0C0',30,['casual'],'👁️'],
-  ['e_dorado','eyes','c','Sombra dorada','#D4A63C',40,['fiesta','elegante'],'👁️'],
-  ['e_violeta','eyes','c','Sombra violeta','#9C6FD8',40,['fiesta'],'👁️'],
-  ['e_ahumado','eyes','c','Ojos ahumados','#3A2F3A',50,['rocker','fiesta'],'👁️'],
-  ['bl_no','blush','none','Sin rubor','',0,[],'🌸'],
-  ['bl_si','blush','c','Rubor','#F07A95',25,['casual','elegante'],'🌸'],
-  ['a_none','acc','none','Nada','',0,[],'✖️'],
-  ['a_gorra','acc','gorra','Gorra','#E0405E',45,['deportivo','casual'],'🧢'],
-  ['a_choker','acc','choker','Choker','#1E1A1F',50,['rocker'],'⛓️'],
-  ['a_lentes','acc','lentes','Lentes de sol','#1E1A1F',60,['casual','rocker'],'🕶️'],
-  ['a_aros','acc','aros','Aros dorados','#D9A93A',70,['elegante','fiesta'],'💫'],
-  ['a_perlas','acc','perlas','Collar de perlas','#F7F2EA',120,['elegante'],'📿'],
-  ['a_cartera','acc','cartera','Cartera','#B3364F',150,['elegante'],'👜'],
-].map(([id,slot,shape,name,color,price,tags,ic,fx])=>({id,slot,shape,name,color,price,tags,ic,fx}));
+  ['t_remera_blanca','top','remera','Remera blanca','#F4F2F5',0,['casual','deportivo']],
+  ['t_remera_negra','top','remera','Remera negra','#2B262F',40,['casual','rocker']],
+  ['t_buzo','top','buzo','Buzo celeste','#86BCE8',80,['deportivo','casual']],
+  ['t_blusa_seda','top','blusa','Blusa de seda','#EED3C2',120,['elegante'],'seda'],
+  ['t_blusa_roja','top','blusa','Blusa roja','#C8283C',140,['elegante','fiesta'],'seda'],
+  ['t_crop_brillos','top','crop','Top de brillos','#B68FE8',150,['fiesta'],'brillo'],
+  ['t_campera_cuero','top','campera','Campera de cuero','#24202A',220,['rocker']],
+  ['b_jean','bottom','jean','Jean clásico','#4A6FA5',0,['casual','rocker']],
+  ['b_short','bottom','short','Short de jean','#6C8FC7',60,['casual']],
+  ['b_calza','bottom','calza','Calza deportiva','#2E2E3A',70,['deportivo']],
+  ['b_pollera_negra','bottom','pollera','Pollera negra','#211C24',90,['elegante','rocker']],
+  ['b_pollera_lente','bottom','pollera','Pollera de lentejuelas','#E2B347',170,['fiesta'],'brillo'],
+  ['d_floreado','dress','vestido','Vestido floreado','#F2A7B8',130,['casual'],'flores'],
+  ['d_negro','dress','vestido','Vestidito negro','#17121A',260,['elegante','fiesta'],'seda'],
+  ['d_brillos','dress','vestido','Vestido de brillos','#A9A6CF',320,['fiesta'],'brillo'],
+  ['d_gala','dress','largo','Vestido de gala','#8E1B4C',480,['elegante'],'seda'],
+  ['s_zapa','shoes','zapa','Zapatillas blancas','#F4F2F5',0,['casual','deportivo']],
+  ['s_sandalias','shoes','sandalias','Sandalias doradas','#D9A93A',110,['fiesta','elegante']],
+  ['s_botas','shoes','botas','Borcegos','#2E2427',150,['rocker']],
+  ['s_tacos_negros','shoes','tacos','Tacos negros','#17121A',160,['elegante','fiesta']],
+  ['s_tacos_rojos','shoes','tacos','Stilettos rojos','#C8283C',240,['elegante','fiesta']],
+  ['h_largo','hair','largo','Pelo largo','',0,['casual']],
+  ['h_rodete','hair','rodete','Rodete','',50,['elegante']],
+  ['h_bob','hair','bob','Corte bob','',60,['rocker']],
+  ['h_ondas','hair','ondas','Ondas','',80,['fiesta']],
+  ['hc_castano','hairColor','c','Castaño','#5A3825',0,[]],
+  ['hc_negro','hairColor','c','Negro','#231A1E',40,[]],
+  ['hc_rubio','hairColor','c','Rubio','#E2C27A',70,[]],
+  ['hc_rojo','hairColor','c','Colorado','#B4412C',80,[]],
+  ['hc_rosa','hairColor','c','Rosa','#F08AB5',90,[]],
+  ['hc_violeta','hairColor','c','Violeta','#8D6BD6',90,[]],
+  ['hc_gris','hairColor','c','Canoso','#B9B4BC',0,[],'oculto'],
+  ['l_natural','lips','c','Labios naturales','#C98A7E',0,['casual','deportivo']],
+  ['l_rosa','lips','c','Labial rosa','#E26A9A',30,['casual','fiesta']],
+  ['l_rojo','lips','c','Labial rojo','#C2142E',45,['elegante']],
+  ['l_bordo','lips','c','Labial bordó','#6E1430',45,['rocker','elegante']],
+  ['e_nada','eyes','none','Sin sombra','',0,['casual','deportivo']],
+  ['e_rosa','eyes','c','Sombra rosa','#F0A0C0',30,['casual']],
+  ['e_dorado','eyes','c','Sombra dorada','#D4A63C',40,['fiesta','elegante']],
+  ['e_violeta','eyes','c','Sombra violeta','#9C6FD8',40,['fiesta']],
+  ['e_ahumado','eyes','c','Ojos ahumados','#3A2F3A',50,['rocker','fiesta']],
+  ['bl_no','blush','none','Sin rubor','',0,[]],
+  ['bl_si','blush','c','Rubor','#F07A95',25,['casual','elegante']],
+  ['a_none','acc','none','Nada','',0,[]],
+  ['a_gorra','acc','gorra','Gorra','#E0405E',45,['deportivo','casual']],
+  ['a_choker','acc','choker','Choker','#1E1A1F',50,['rocker']],
+  ['a_lentes','acc','lentes','Lentes de sol','#1E1A1F',60,['casual','rocker']],
+  ['a_aros','acc','aros','Aros dorados','#D9A93A',70,['elegante','fiesta']],
+  ['a_perlas','acc','perlas','Collar de perlas','#F7F2EA',120,['elegante']],
+  ['a_cartera','acc','cartera','Cartera','#B3364F',150,['elegante']],
+].map(([id,slot,shape,name,color,price,tags,fx])=>({id,slot,shape,name,color,price,tags,fx}));
 const IT = Object.fromEntries(ITEMS.map(i=>[i.id,i]));
 const TABS = [
   {id:'ropa',label:'Ropa',slots:['top','bottom','dress']},
@@ -196,16 +270,17 @@ const JOBS = {tienda:{name:'Tienda de ropa',pay:150},cafe:{name:'Cafetería',pay
 const HOMES = {lu:{name:'Depto con Lu',rent:100},solo:{name:'Tu monoambiente',rent:200},tia:{name:'Casa de la tía Rosa',rent:0}};
 const CH = {1:'La gran ciudad',2:'Abriéndote camino',3:'La gran decisión'};
 
+const BASEW = {top:'t_remera_blanca',bottom:'b_jean',dress:null,shoes:'s_zapa',hair:'h_largo',hairColor:'hc_castano',lips:'l_natural',eyes:'e_nada',blush:'bl_no',acc:'a_none'};
 function fresh(){
   return {name:'',skin:1,money:300,fame:0,mood:5,energy:MAXE,chapter:1,scene:'setup',pending:null,job:null,home:null,flags:{},
-    owned:ITEMS.filter(i=>i.price===0).map(i=>i.id),
-    wear:{top:'t_remera_blanca',bottom:'b_jean',dress:null,shoes:'s_zapa',hair:'h_largo',hairColor:'hc_castano',lips:'l_natural',eyes:'e_nada',blush:'bl_no',acc:'a_none'},
+    owned:ITEMS.filter(i=>i.price===0 && i.fx!=='oculto').map(i=>i.id), wear:{...BASEW},
     event:null,result:null,notice:null,done:false};
 }
 let S = fresh();
-let view = null;         // pantalla temporal: 'closet' | 'puzzles' | 'puzzle'
-let ui = {tab:'ropa', mode:'mine', tryOn:null, resetAsk:false};
-let P = null;            // estado del puzzle en curso
+let view = null;
+let ui = {tab:'ropa', mode:'mine', tryOn:null, resetAsk:false, pop:false};
+let P = null;
+let lastKey = '';
 
 function save(){ try{ localStorage.setItem(SAVE, JSON.stringify(S)); }catch(e){} }
 function load(){ try{ const s=JSON.parse(localStorage.getItem(SAVE)); if(s && s.wear) return Object.assign(fresh(), s); }catch(e){} return null; }
@@ -213,102 +288,260 @@ const esc = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'
 const N = () => `<b>${esc(S.name)}</b>`;
 const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
 const price = it => S.job==='tienda' ? Math.round(it.price*0.8) : it.price;
+function shade(hex, amt){
+  let c = hex.replace('#',''); if(c.length===3) c=c.split('').map(x=>x+x).join('');
+  const n = parseInt(c,16); let r=n>>16, g=(n>>8)&255, b=n&255;
+  const t = amt<0?0:255, p = Math.abs(amt);
+  r=Math.round((t-r)*p+r); g=Math.round((t-g)*p+g); b=Math.round((t-b)*p+b);
+  return '#'+((1<<24)|(r<<16)|(g<<8)|b).toString(16).slice(1);
+}
+function rng(seed){ return ()=> (seed = (seed*16807) % 2147483647) / 2147483647; }
 
 let toastT;
 function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2400); }
 
+let bumpKeys = [];
 function applyFx(fx){
   if(!fx) return;
   const parts=[];
-  if(fx.money){ S.money+=fx.money; parts.push((fx.money>0?'+':'−')+'$'+Math.abs(fx.money)); }
-  if(fx.fame){ S.fame=Math.max(0,S.fame+fx.fame); parts.push((fx.fame>0?'+':'')+fx.fame+' fama'); }
-  if(fx.mood){ S.mood=Math.max(0,Math.min(10,S.mood+fx.mood)); parts.push((fx.mood>0?'+':'')+fx.mood+' ánimo'); }
+  if(fx.money){ S.money+=fx.money; parts.push((fx.money>0?'+':'−')+'$'+Math.abs(fx.money)); bumpKeys.push('money'); }
+  if(fx.fame){ S.fame=Math.max(0,S.fame+fx.fame); parts.push((fx.fame>0?'+':'')+fx.fame+' fama'); bumpKeys.push('fame'); }
+  if(fx.mood){ S.mood=Math.max(0,Math.min(10,S.mood+fx.mood)); parts.push((fx.mood>0?'+':'')+fx.mood+' ánimo'); bumpKeys.push('mood'); }
   if(parts.length) toast(parts.join(' · '));
 }
 
+/* ---------- Íconos ---------- */
+const PIC = {
+  vestido:`<path d="M25,6 L39,6 L40,20 C46,30 52,44 56,58 Q32,64 8,58 C12,44 18,30 24,20 Z" fill="#F06A9A"/><path d="M24,20 L40,20" stroke="#fff" stroke-width="2.5" opacity=".7"/><path d="M8,58 Q32,64 56,58 L54,54 Q32,59 10,54Z" fill="#C4386F"/><circle cx="22" cy="40" r="2" fill="#fff" opacity=".7"/><circle cx="38" cy="46" r="2" fill="#fff" opacity=".7"/><circle cx="30" cy="30" r="2" fill="#fff" opacity=".7"/>`,
+  taco:`<path d="M4,46 C14,46 22,40 28,28 C34,34 42,38 52,40 Q60,42 60,48 L60,50 L24,50 L14,58 L11,58 L12,48 Z" fill="#D02A44"/><path d="M28,28 C34,34 42,38 52,40" stroke="#fff" stroke-width="2" fill="none" opacity=".4"/><path d="M24,50 L60,50 L60,53 L24,53Z" fill="#7A1426"/>`,
+  cartera:`<path d="M20,24 Q32,4 44,24" fill="none" stroke="#7A2440" stroke-width="4" stroke-linecap="round"/><rect x="10" y="22" width="44" height="34" rx="8" fill="#B3364F"/><path d="M10,32 L54,32" stroke="#8E2440" stroke-width="2"/><rect x="27" y="29" width="10" height="8" rx="2" fill="#E2B347"/><rect x="12" y="24" width="12" height="4" rx="2" fill="#fff" opacity=".25"/>`,
+  labial:`<rect x="21" y="36" width="22" height="24" rx="4" fill="#2A1838"/><rect x="21" y="36" width="5" height="24" fill="#fff" opacity=".15"/><rect x="23" y="27" width="18" height="11" rx="1" fill="#D9A93A"/><path d="M25,27 L25,13 Q25,6 39,4 L39,27 Z" fill="#E0306A"/><path d="M27,24 L27,14" stroke="#fff" stroke-width="2" opacity=".4"/>`,
+  lentes:`<path d="M4,26 L60,26" stroke="#2A1838" stroke-width="3.5" stroke-linecap="round"/><path d="M6,26 L28,26 Q28,44 17,44 Q6,44 6,26Z" fill="#3B2A4A"/><path d="M36,26 L58,26 Q58,44 47,44 Q36,44 36,26Z" fill="#3B2A4A"/><path d="M10,29 L16,35" stroke="#FF9CC6" stroke-width="2.5" opacity=".7"/><path d="M40,29 L46,35" stroke="#FF9CC6" stroke-width="2.5" opacity=".7"/>`,
+  pamela:`<ellipse cx="32" cy="44" rx="29" ry="10" fill="#E8C98A"/><path d="M17,42 C17,20 47,20 47,42 Z" fill="#F0D69F"/><path d="M17,36 Q32,40 47,36 L47,42 Q32,46 17,42Z" fill="#C81D6B"/><circle cx="46" cy="38" r="4" fill="#FF8CC0"/>`,
+  anillo:`<ellipse cx="32" cy="42" rx="15" ry="14" fill="none" stroke="#D9A93A" stroke-width="5"/><path d="M22,22 L27,14 L37,14 L42,22 L32,32 Z" fill="#A6ECFA"/><path d="M22,22 L42,22 M27,14 L32,22 L37,14" stroke="#fff" stroke-width="1.2" fill="none"/>`,
+  bota:`<path d="M18,4 L36,4 L36,38 C46,40 56,44 58,52 L58,56 L16,56 Z" fill="#6B3E2A"/><path d="M20,10 L34,10 M20,18 L34,18 M20,26 L34,26" stroke="#E2B347" stroke-width="2"/><rect x="16" y="54" width="42" height="6" rx="2" fill="#2A1838"/>`,
+  estrella:`<path d="M32,4 L39.6,22.4 L59,23.6 L44,36 L48.8,55.4 L32,44.6 L15.2,55.4 L20,36 L5,23.6 L24.4,22.4 Z"/>`,
+  moneda:`<circle cx="32" cy="32" r="26" fill="#E2B347"/><circle cx="32" cy="32" r="20" fill="none" stroke="#B88A1E" stroke-width="3"/><text x="32" y="42" font-size="28" font-weight="900" text-anchor="middle" fill="#8A6510" font-family="Georgia,serif">$</text>`,
+  corazon:`<path d="M32,56 C10,40 4,28 10,18 C16,8 28,10 32,20 C36,10 48,8 54,18 C60,28 54,40 32,56Z" fill="currentColor"/>`,
+  estrellaF:`<path d="M32,6 L39,23 L57,24 L43,36 L48,54 L32,44 L16,54 L21,36 L7,24 L25,23 Z" fill="currentColor"/>`,
+  casa:`<path d="M8,30 L32,10 L56,30 L56,56 L8,56Z" fill="#F2A7B8"/><path d="M4,32 L32,8 L60,32" stroke="#C81D6B" stroke-width="5" fill="none" stroke-linecap="round"/><rect x="26" y="38" width="12" height="18" fill="#8E1B4C"/>`,
+};
+const icon = (k, cls='') => `<svg viewBox="0 0 64 64" class="${cls}" aria-hidden="true">${PIC[k]}</svg>`;
+
 /* ---------- Personaje ---------- */
+let UID = 0;
 function pair(svg){ return svg + `<g transform="translate(200,0) scale(-1,1)">${svg}</g>`; }
 const SPARK = {
-  top:[[84,130],[112,142],[96,162],[121,126],[78,152],[106,170]],
-  dress:[[86,140],[112,152],[96,190],[120,232],[80,252],[104,272],[132,284],[68,282],[92,226]],
-  bottom:[[80,226],[110,246],[96,270],[124,280],[70,276],[100,214]],
+  top:[[84,130],[112,142],[96,162],[121,126],[78,152],[106,172],[90,190],[118,196]],
+  dress:[[86,140],[112,152],[96,188],[120,232],[80,252],[104,272],[132,286],[68,282],[92,226],[110,206],[76,300],[124,330],[96,350]],
+  bottom:[[80,226],[110,246],[96,270],[124,280],[70,276],[100,214],[86,250]],
 };
 function deco(it, slot){
   if(!it.fx) return '';
   const pts = SPARK[slot]||[];
-  if(it.fx==='brillo') return pts.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.8" fill="#fff" opacity=".85"/>`).join('');
-  return pts.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="4.5" fill="#fff" opacity=".75"/><circle cx="${x}" cy="${y}" r="1.6" fill="#F5C443"/>`).join('');
+  if(it.fx==='brillo') return pts.map(([x,y],i)=>`<path d="M${x},${y-3} L${x+1},${y} L${x},${y+3} L${x-1},${y}Z M${x-3},${y} L${x},${y-1} L${x+3},${y} L${x},${y+1}Z" fill="#fff" opacity="${.6+.4*(i%2)}"/>`).join('');
+  if(it.fx==='flores') return pts.map(([x,y])=>`<g transform="translate(${x},${y})"><circle r="2.6" cx="0" cy="-3" fill="#fff"/><circle r="2.6" cx="3" cy="0" fill="#fff"/><circle r="2.6" cx="0" cy="3" fill="#fff"/><circle r="2.6" cx="-3" cy="0" fill="#fff"/><circle r="1.8" fill="#F5C443"/></g>`).join('');
+  return '';
 }
-function avatar(w, skinIdx){
-  const sk = SKINS[skinIdx]||SKINS[1];
-  const hc = IT[w.hairColor].color, hs = IT[w.hair].shape;
+const P_ = {
+  armL:'M70,118 C60,122 58,150 56,176 C54,200 52,214 50,228 L58,230 C62,212 64,196 68,176 C72,156 76,136 78,124 Z',
+  legL:'M66,240 C66,280 73,318 75,346 C76,358 76,366 76,374 L90,374 C90,360 92,340 94,320 C96,292 99,264 101,248 Z',
+  torso:'M70,116 C80,110 120,110 130,116 C134,140 128,170 124,196 C126,214 134,228 136,244 C120,252 80,252 64,244 C66,228 74,214 76,196 C72,170 66,140 70,116 Z',
+  face:'M70,58 C70,32 84,24 100,24 C116,24 130,32 130,58 C130,80 117,95 100,97 C83,95 70,80 70,58 Z',
+  tee:'M66,114 C82,107 118,107 134,114 L152,146 L139,155 L133,150 C131,172 129,192 129,212 L71,212 C71,192 69,172 67,150 L61,155 L48,146 Z',
+  sleeveL:'M67,115 C57,120 54,150 52,176 C50,198 48,210 46,220 L61,223 C64,206 66,194 70,176 C74,156 78,136 80,124 Z',
+  blouse:'M67,114 C82,107 118,107 133,114 C135,140 131,172 129,212 L71,212 C69,172 65,140 67,114 Z',
+  crop:'M71,118 C84,113 116,113 129,118 C131,138 130,158 129,176 L71,176 C70,158 69,138 71,118 Z',
+  jean:'M73,194 L127,194 C133,212 137,228 138,246 C135,290 129,330 127,372 L104,372 L101,258 L99,258 L96,372 L73,372 C71,330 65,290 62,246 C63,228 67,212 73,194 Z',
+  calza:'M74,194 L126,194 C132,212 136,228 137,246 C134,290 128,326 125,364 L105,364 L101,258 L99,258 L95,364 L75,364 C72,326 66,290 63,246 C64,228 68,212 74,194 Z',
+  short:'M73,194 L127,194 C133,212 137,228 138,246 L141,274 L104,274 L100,256 L96,274 L59,274 L62,246 C63,228 67,212 73,194 Z',
+  skirt:'M75,194 L125,194 C134,220 143,256 151,292 Q100,302 49,292 C57,256 66,220 75,194 Z',
+  dress:'M72,122 Q86,114 100,124 Q114,114 128,122 C131,146 128,172 124,198 C134,230 146,268 154,304 Q100,316 46,304 C54,268 66,230 76,198 C72,172 69,146 72,122 Z',
+  gown:'M72,122 Q86,114 100,124 Q114,114 128,122 C131,146 128,172 124,198 C140,250 154,320 166,380 Q100,392 34,380 C46,320 60,250 76,198 C72,172 69,146 72,122 Z',
+};
+function avatar(w, skinIdx, opt={}){
+  const id = 'a'+(++UID);
+  const sk = SKINS[skinIdx] ?? SKINS[1], skD = shade(sk,-.2);
+  const hc = IT[w.hairColor].color, hcL = shade(hc,.28), hcD = shade(hc,-.32);
+  const hs = IT[w.hair].shape;
+  const SK = `url(#${id}s)`, H = `url(#${id}h)`, F = `url(#${id}f)`;
+  const gar = (d,c,more='') => `<path d="${d}" fill="${c}"/><path d="${d}" fill="${F}"/>${more}`;
+  const defs = `<defs>
+    <linearGradient id="${id}s" x1="0" x2="1"><stop offset="0" stop-color="${skD}"/><stop offset=".3" stop-color="${sk}"/><stop offset=".7" stop-color="${sk}"/><stop offset="1" stop-color="${skD}"/></linearGradient>
+    <linearGradient id="${id}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${hcL}"/><stop offset=".45" stop-color="${hc}"/><stop offset="1" stop-color="${hcD}"/></linearGradient>
+    <linearGradient id="${id}f" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".26"/><stop offset=".25" stop-color="#000" stop-opacity="0"/><stop offset=".45" stop-color="#fff" stop-opacity=".14"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".28"/></linearGradient>
+    <radialGradient id="${id}b"><stop offset="0" stop-color="#F06A8A" stop-opacity=".6"/><stop offset="1" stop-color="#F06A8A" stop-opacity="0"/></radialGradient>
+    <linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE9A8"/><stop offset=".5" stop-color="#D9A93A"/><stop offset="1" stop-color="#9A6E0C"/></linearGradient>
+  </defs>`;
   const g = [];
+  if(!opt.still) g.push(`<ellipse cx="100" cy="390" rx="46" ry="6" fill="#000" opacity=".18"/>`);
   // pelo de atrás
-  if(hs==='largo') g.push(`<path d="M68,58 Q64,20 100,20 Q136,20 132,58 L141,172 Q100,182 59,172 Z" fill="${hc}"/>`);
-  if(hs==='ondas') g.push(`<path d="M68,58 Q62,18 100,18 Q138,18 132,58 Q148,80 137,100 Q150,122 138,142 Q148,160 132,168 Q100,178 68,168 Q52,160 62,142 Q50,122 63,100 Q52,80 68,58Z" fill="${hc}"/>`);
-  if(hs==='bob') g.push(`<path d="M65,60 Q63,21 100,21 Q137,21 135,60 L137,104 Q100,110 63,104 Z" fill="${hc}"/>`);
-  if(hs==='rodete') g.push(`<circle cx="100" cy="22" r="17" fill="${hc}"/>`);
+  if(hs==='largo') g.push(`<path d="M66,60 C62,24 82,16 100,16 C118,16 138,24 134,60 C136,100 140,140 145,178 C120,188 80,188 55,178 C60,140 64,100 66,60 Z" fill="${H}"/><path d="M70,90 C68,120 66,150 62,172 M130,90 C132,120 134,150 138,172 M76,120 C74,140 72,160 70,178" stroke="${hcD}" stroke-width="1.4" fill="none" opacity=".45"/>`);
+  if(hs==='ondas') g.push(`<path d="M66,60 C60,22 82,14 100,14 C118,14 140,22 134,60 C148,78 136,96 146,114 C154,132 138,146 146,164 C140,178 124,184 100,184 C76,184 60,178 54,164 C62,146 46,132 54,114 C64,96 52,78 66,60 Z" fill="${H}"/><path d="M64,96 C58,110 66,120 60,134 C56,146 64,156 60,166 M136,96 C142,110 134,120 140,134 C144,146 136,156 140,166" stroke="${hcD}" stroke-width="1.6" fill="none" opacity=".45"/>`);
+  if(hs==='bob') g.push(`<path d="M64,62 C60,24 82,18 100,18 C118,18 140,24 136,62 C137,80 139,96 140,106 C120,112 80,112 60,106 C61,96 63,80 64,62 Z" fill="${H}"/>`);
+  if(hs==='rodete') g.push(`<circle cx="100" cy="21" r="18" fill="${H}"/><path d="M86,18 Q100,8 114,18 M88,26 Q100,16 112,26" stroke="${hcD}" stroke-width="1.4" fill="none" opacity=".5"/>`);
   // cuerpo
-  g.push(`<g stroke="${sk}" stroke-width="20" stroke-linecap="round"><line x1="84" y1="236" x2="83" y2="368"/><line x1="116" y1="236" x2="117" y2="368"/></g>`);
-  g.push(`<g stroke="${sk}" stroke-width="14" stroke-linecap="round"><line x1="68" y1="124" x2="54" y2="226"/><line x1="132" y1="124" x2="146" y2="226"/></g><circle cx="53" cy="232" r="8" fill="${sk}"/><circle cx="147" cy="232" r="8" fill="${sk}"/>`);
-  g.push(`<rect x="92" y="86" width="16" height="32" fill="${sk}"/><path d="M66,118 Q100,108 134,118 L128,206 Q130,222 136,240 L64,240 Q70,222 72,206 Z" fill="${sk}"/>`);
+  const body = [];
+  body.push(pair(`<path d="${P_.legL}" fill="${SK}"/>`));
+  body.push(pair(`<path d="M74,366 C72,374 70,382 72,385 L95,385 C96,380 94,372 91,366 Z" fill="${sk}"/>`));
+  body.push(pair(`<path d="${P_.armL}" fill="${SK}"/><ellipse cx="54" cy="235" rx="6.5" ry="8.5" fill="${sk}"/>`));
+  body.push(`<path d="M93,84 L107,84 L108,116 L92,116 Z" fill="${SK}"/><path d="${P_.torso}" fill="${SK}"/><path d="M88,112 Q100,118 112,112" stroke="${skD}" stroke-width="1.2" fill="none" opacity=".5"/>`);
   // zapatos
-  const sh = IT[w.shoes], sc = sh.color;
-  if(sh.shape==='zapa') g.push(pair(`<rect x="68" y="361" width="31" height="21" rx="9" fill="${sc}" stroke="#CFC6D3" stroke-width="1"/><rect x="68" y="377" width="31" height="5" rx="2" fill="#CFC6D3"/>`));
-  if(sh.shape==='tacos') g.push(pair(`<path d="M72,358 L95,358 L97,371 L87,382 L70,376 Z" fill="${sc}"/><rect x="72" y="374" width="4" height="13" fill="${sc}"/>`));
-  if(sh.shape==='botas') g.push(pair(`<rect x="71" y="298" width="25" height="78" rx="5" fill="${sc}"/><rect x="68" y="370" width="31" height="13" rx="5" fill="${sc}"/><rect x="68" y="379" width="31" height="4" rx="2" fill="#111"/>`));
-  if(sh.shape==='sandalias') g.push(pair(`<rect x="69" y="378" width="30" height="5" rx="2" fill="${sc}"/><path d="M73,365 L95,373 M73,374 L95,365" stroke="${sc}" stroke-width="3" stroke-linecap="round"/>`));
-  // abajo / vestido
+  const sh = IT[w.shoes], sc = sh.color, scD = shade(sc,-.35);
+  if(sh.shape==='zapa') body.push(pair(`<path d="M68,368 C68,359 76,356 84,356 C92,356 98,360 99,368 L99,381 L67,381 Z" fill="${sc}"/><path d="M68,368 C68,359 76,356 84,356 C92,356 98,360 99,368 L99,381 L67,381 Z" fill="${F}"/><rect x="65.5" y="378" width="35" height="7" rx="3.5" fill="#E2DAE6"/><path d="M76,362 L92,362 M75,367 L93,367 M75,372 L93,372" stroke="#C9C0CE" stroke-width="1.5"/><rect x="65.5" y="383" width="35" height="2" rx="1" fill="#C81D6B" opacity=".6"/>`));
+  if(sh.shape==='tacos') body.push(pair(`<path d="M72,374 L74,393 L77,393 L77,378Z" fill="${scD}"/><path d="M71,357 L93,357 C97,363 98,371 93,379 L85,389 C80,387 74,383 70,379 Z" fill="${sc}"/><path d="M76,361 Q81,370 79,380" stroke="#fff" stroke-width="1.6" fill="none" opacity=".35"/>`));
+  if(sh.shape==='botas') body.push(pair(`<path d="M70,296 L96,296 L95,364 C98,369 100,375 99,384 L67,384 C66,374 69,368 71,363 Z" fill="${sc}"/><path d="M70,296 L96,296 L95,364 C98,369 100,375 99,384 L67,384 C66,374 69,368 71,363 Z" fill="${F}"/><path d="M76,304 L90,310 M90,304 L76,310 M76,316 L90,322 M90,316 L76,322 M76,328 L90,334 M90,328 L76,334" stroke="#C9A35A" stroke-width="1.3"/><rect x="66" y="381" width="34" height="6" rx="2" fill="#111"/><rect x="69" y="294" width="28" height="5" rx="2" fill="${scD}"/>`));
+  if(sh.shape==='sandalias') body.push(pair(`<rect x="68" y="383" width="31" height="4.5" rx="2" fill="${scD}"/><path d="M72,370 L95,378 M72,378 L95,370" stroke="${sc}" stroke-width="3.2" stroke-linecap="round"/><path d="M75,360 L92,360" stroke="${sc}" stroke-width="2.6" stroke-linecap="round"/><circle cx="84" cy="374" r="2.2" fill="#FFF3C4"/>`));
+  // abajo / vestido / arriba
   if(w.dress){
     const d = IT[w.dress], c = d.color;
-    if(d.shape==='vestido') g.push(`<path d="M70,118 Q100,112 130,118 L126,200 L150,302 L50,302 L74,200 Z" fill="${c}"/>`);
-    if(d.shape==='largo') g.push(`<path d="M70,118 Q100,112 130,118 L126,200 L158,374 L42,374 L74,200 Z" fill="${c}"/><path d="M74,200 L126,200" stroke="rgba(255,255,255,.35)" stroke-width="3"/>`);
-    g.push(deco(d,'dress'));
+    const path = d.shape==='largo' ? P_.gown : P_.dress;
+    body.push(`<path d="M80,124 L84,110 M120,124 L116,110" stroke="${shade(c,-.2)}" stroke-width="3" stroke-linecap="round"/>`);
+    body.push(gar(path,c,`<path d="M76,198 Q100,204 124,198" stroke="${shade(c,-.3)}" stroke-width="2" fill="none"/>`));
+    if(d.shape==='largo') body.push(`<path d="M92,210 C88,270 84,330 78,384 M108,210 C112,270 118,330 124,384" stroke="${shade(c,-.25)}" stroke-width="1.6" fill="none" opacity=".6"/><path d="M100,206 C100,280 100,330 100,388" stroke="#fff" stroke-width="2.5" fill="none" opacity=".12"/>`);
+    else body.push(`<path d="M88,206 C84,240 78,270 72,304 M112,206 C116,240 122,270 128,304" stroke="${shade(c,-.25)}" stroke-width="1.4" fill="none" opacity=".55"/>`);
+    if(d.fx==='seda') body.push(`<path d="${path}" fill="#fff" opacity=".06"/>`);
+    body.push(deco(d,'dress'));
   } else {
-    const b = IT[w.bottom], c = b.color;
-    if(b.shape==='jean') g.push(`<path d="M65,200 L135,200 L138,240 L129,368 L105,368 L101,252 L99,252 L95,368 L71,368 L62,240 Z" fill="${c}"/><path d="M100,206 L100,250" stroke="rgba(0,0,0,.2)" stroke-width="2"/>`);
-    if(b.shape==='calza') g.push(`<path d="M66,200 L134,200 L136,240 L127,362 L107,362 L101,252 L99,252 L93,362 L73,362 L64,240 Z" fill="${c}"/>`);
-    if(b.shape==='short') g.push(`<path d="M66,200 L134,200 L140,268 L104,268 L100,250 L96,268 L60,268 Z" fill="${c}"/>`);
-    if(b.shape==='pollera') g.push(`<path d="M68,200 L132,200 L148,290 L52,290 Z" fill="${c}"/>`);
-    g.push(deco(b,'bottom'));
-    const t = IT[w.top], tc = t.color;
-    const sleeves = `<g stroke="${tc}" stroke-width="18" stroke-linecap="round"><line x1="68" y1="124" x2="55" y2="216"/><line x1="132" y1="124" x2="145" y2="216"/></g>`;
-    if(t.shape==='remera') g.push(`<path d="M64,116 Q100,108 136,116 L152,150 L136,158 L131,212 L69,212 L64,158 L48,150 Z" fill="${tc}" stroke="rgba(0,0,0,.08)"/>`);
-    if(t.shape==='crop') g.push(`<path d="M68,116 Q100,108 132,116 L129,178 L71,178 Z" fill="${tc}"/>`);
-    if(t.shape==='blusa') g.push(sleeves+`<path d="M64,116 Q100,108 136,116 L131,214 L69,214 Z" fill="${tc}"/><path d="M90,114 Q100,128 110,114" fill="none" stroke="rgba(0,0,0,.15)" stroke-width="2"/>`);
-    if(t.shape==='buzo') g.push(sleeves+`<path d="M64,116 Q100,108 136,116 L131,214 L69,214 Z" fill="${tc}"/><path d="M80,182 L120,182 L124,208 L76,208 Z" fill="rgba(0,0,0,.12)"/><path d="M84,113 Q100,130 116,113" fill="none" stroke="rgba(0,0,0,.2)" stroke-width="3"/>`);
-    if(t.shape==='campera') g.push(sleeves+`<path d="M86,114 L114,114 L112,214 L88,214 Z" fill="#EFE9F2"/>`+pair(`<path d="M64,116 L90,112 L95,214 L69,214 Z" fill="${tc}"/><path d="M90,112 L82,140 L94,150" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="2"/>`));
-    g.push(deco(t,'top'));
+    const b = IT[w.bottom], c = b.color, cD = shade(c,-.3);
+    if(b.shape==='jean') body.push(gar(P_.jean,c,`<path d="M73,200 L127,200" stroke="${cD}" stroke-width="2"/><path d="M100,200 L100,256" stroke="${cD}" stroke-width="1.6"/><path d="M78,206 Q86,214 94,206 M106,206 Q114,214 122,206" stroke="#E2B347" stroke-width="1.2" fill="none" stroke-dasharray="2 2"/><path d="M74,364 L96,364 M104,364 L126,364" stroke="${cD}" stroke-width="2"/>`));
+    if(b.shape==='calza') body.push(gar(P_.calza,c,`<path d="M66,262 C70,300 74,330 76,360 M134,262 C130,300 126,330 124,360" stroke="#fff" stroke-width="2" fill="none" opacity=".35"/>`));
+    if(b.shape==='short') body.push(gar(P_.short,c,`<path d="M73,200 L127,200" stroke="${cD}" stroke-width="2"/><path d="M60,270 L96,270 M104,270 L140,270" stroke="#fff" stroke-width="2" opacity=".5" stroke-dasharray="3 2"/>`));
+    if(b.shape==='pollera') body.push(gar(P_.skirt,c,`<path d="M75,200 L125,200" stroke="${cD}" stroke-width="3"/><path d="M90,204 L80,294 M110,204 L120,294 M100,204 L100,298" stroke="${cD}" stroke-width="1.3" opacity=".5"/>`));
+    body.push(deco(b,'bottom'));
+    const t = IT[w.top], tc = t.color, tD = shade(tc,-.25);
+    const sleeves = pair(`<path d="${P_.sleeveL}" fill="${tc}"/><path d="${P_.sleeveL}" fill="${F}"/>`);
+    if(t.shape==='remera') body.push(gar(P_.tee,tc,`<path d="M86,110 Q100,122 114,110" stroke="${tD}" stroke-width="2.5" fill="none"/><path d="M52,148 L62,154 M148,148 L138,154" stroke="${tD}" stroke-width="1.5"/>`));
+    if(t.shape==='crop') body.push(`<path d="M80,118 L84,108 M120,118 L116,108" stroke="${tc}" stroke-width="3" stroke-linecap="round"/>`+gar(P_.crop,tc,`<path d="M71,172 L129,172" stroke="${tD}" stroke-width="2"/>`));
+    if(t.shape==='blusa') body.push(sleeves+gar(P_.blouse,tc,`<path d="M88,110 L100,134 L112,110" stroke="${tD}" stroke-width="2" fill="${sk}"/><path d="M90,150 Q100,156 110,150 M86,176 Q100,182 114,176" stroke="${tD}" stroke-width="1.2" fill="none" opacity=".5"/><circle cx="100" cy="146" r="1.6" fill="${tD}"/><circle cx="100" cy="160" r="1.6" fill="${tD}"/>`));
+    if(t.shape==='buzo') body.push(sleeves+gar(P_.blouse,tc,`<path d="M80,180 L120,180 L124,206 L76,206 Z" fill="#000" opacity=".1"/><path d="M80,112 Q100,134 120,112" stroke="${tD}" stroke-width="4" fill="none"/><path d="M94,124 L93,146 M106,124 L107,146" stroke="#fff" stroke-width="1.8"/><path d="M71,206 L129,206" stroke="${tD}" stroke-width="5"/>`));
+    if(t.shape==='campera') body.push(sleeves+`<path d="M86,114 L114,114 L112,212 L88,212 Z" fill="#EFE9F2"/>`+pair(`<path d="M66,114 L90,110 L95,212 L70,212 C69,172 64,140 66,114 Z" fill="${tc}"/><path d="M66,114 L90,110 L95,212 L70,212 C69,172 64,140 66,114 Z" fill="${F}"/><path d="M90,110 L80,140 L93,152" fill="none" stroke="#fff" stroke-width="1.6" opacity=".3"/><circle cx="78" cy="170" r="1.8" fill="#C9C0CE"/><path d="M72,186 L84,186" stroke="#C9C0CE" stroke-width="1.6"/>`));
+    body.push(deco(t,'top'));
   }
   // accesorios de cuello
   const a = IT[w.acc];
-  if(a.shape==='perlas'){ let s=''; for(let i=0;i<=8;i++){const t=i/8; s+=`<circle cx="${86+28*t}" cy="${110+48*t*(1-t)}" r="2.8" fill="#F7F2EA" stroke="#CFC5B8" stroke-width=".6"/>`;} g.push(s); }
-  if(a.shape==='choker') g.push(`<rect x="91" y="98" width="18" height="5" rx="2" fill="${a.color}"/>`);
-  // cabeza y cara
-  g.push(`<circle cx="70" cy="62" r="7" fill="${sk}"/><circle cx="130" cy="62" r="7" fill="${sk}"/><ellipse cx="100" cy="60" rx="30" ry="34" fill="${sk}"/>`);
+  if(a.shape==='perlas'){ let s=''; for(let i=0;i<=9;i++){const t=i/9; s+=`<circle cx="${86+28*t}" cy="${110+50*t*(1-t)}" r="2.9" fill="#FBF7F0" stroke="#CFC5B8" stroke-width=".6"/><circle cx="${85.4+28*t}" cy="${109.2+50*t*(1-t)}" r=".9" fill="#fff"/>`;} body.push(s); }
+  if(a.shape==='choker') body.push(`<rect x="91" y="99" width="18" height="5" rx="2" fill="${a.color}"/><circle cx="100" cy="106" r="2.4" fill="url(#${id}g)"/>`);
+  if(a.shape==='cartera') body.push(`<path d="M126,118 L150,212" stroke="${shade(a.color,-.3)}" stroke-width="2.6"/><rect x="134" y="208" width="34" height="27" rx="7" fill="${a.color}"/><rect x="134" y="208" width="34" height="27" rx="7" fill="${F}"/><path d="M134,218 L168,218" stroke="${shade(a.color,-.3)}" stroke-width="1.5"/><rect x="147" y="215" width="8" height="6" rx="1.5" fill="url(#${id}g)"/>`);
+  // cabeza
+  body.push(`<ellipse cx="70" cy="64" rx="6" ry="9" fill="${sk}"/><ellipse cx="130" cy="64" rx="6" ry="9" fill="${sk}"/><path d="${P_.face}" fill="${sk}"/><path d="M76,80 C82,92 92,97 100,97 C108,97 118,92 124,80 C118,90 108,94 100,94 C92,94 82,90 76,80Z" fill="${skD}" opacity=".35"/>`);
   const ey = IT[w.eyes];
-  if(ey.shape!=='none') g.push(`<ellipse cx="89" cy="55" rx="9" ry="5.5" fill="${ey.color}" opacity=".8"/><ellipse cx="111" cy="55" rx="9" ry="5.5" fill="${ey.color}" opacity=".8"/>`);
-  g.push(pair(`<ellipse cx="89" cy="58" rx="5.5" ry="4" fill="#fff"/><circle cx="89" cy="58.5" r="3" fill="#2A1838"/><circle cx="90" cy="57.5" r="1" fill="#fff"/><path d="M83,55.5 Q89,51.5 95,55.5" fill="none" stroke="#2A1838" stroke-width="1.6"/><path d="M82,47 Q89,43 96,46" fill="none" stroke="${hc}" stroke-width="2.6" stroke-linecap="round"/>`));
-  if(IT[w.blush].shape!=='none') g.push(`<circle cx="80" cy="72" r="7" fill="#F07A95" opacity=".45"/><circle cx="120" cy="72" r="7" fill="#F07A95" opacity=".45"/>`);
-  g.push(`<path d="M100,63 Q97,71 100,73" fill="none" stroke="rgba(0,0,0,.22)" stroke-width="1.5"/>`);
-  g.push(`<path d="M92,81 Q96,78 100,80 Q104,78 108,81 Q100,89 92,81 Z" fill="${IT[w.lips].color}"/>`);
+  if(ey.shape!=='none') body.push(pair(`<path d="M79,57 Q89,43 99,56 Q89,51 79,57Z" fill="${ey.color}" opacity=".9"/>`));
+  body.push(pair(`<path d="M80,46 Q89,39.5 98,43.5 L98,45.2 Q89,42.6 80,47.6Z" fill="${hcD}"/>`));
+  body.push(`<g class="eyes">${pair(`<path d="M82,58.5 Q89,51.5 96.5,58 Q89,64 82,58.5Z" fill="#fff"/><circle cx="89.5" cy="58" r="4" fill="#6B4426"/><circle cx="89.5" cy="58" r="1.9" fill="#1D1020"/><circle cx="91" cy="56.6" r="1.2" fill="#fff"/><path d="M81,58.2 Q89,50 97.5,57.4" fill="none" stroke="#1D1020" stroke-width="2.2" stroke-linecap="round"/><path d="M82,58 L78.6,55.6 M83.6,55 L81,52.4" stroke="#1D1020" stroke-width="1.3" stroke-linecap="round"/>`)}</g>`);
+  if(IT[w.blush].shape!=='none') body.push(`<ellipse cx="80" cy="74" rx="10" ry="6.5" fill="url(#${id}b)"/><ellipse cx="120" cy="74" rx="10" ry="6.5" fill="url(#${id}b)"/>`);
+  body.push(`<path d="M100,63 Q98,71 101,73.5" fill="none" stroke="${skD}" stroke-width="1.4" stroke-linecap="round"/><path d="M97,74.5 Q100,76 103,74.5" fill="none" stroke="${skD}" stroke-width="1" opacity=".6"/>`);
+  const lc = IT[w.lips].color;
+  body.push(`<path d="M90.5,81 Q95,77.6 100,79.4 Q105,77.6 109.5,81 Q100,82.4 90.5,81Z" fill="${shade(lc,-.08)}"/><path d="M90.5,81 Q100,82.4 109.5,81 Q105,88 100,88 Q95,88 90.5,81Z" fill="${shade(lc,.1)}"/><path d="M90.5,81 Q100,83 109.5,81" stroke="${shade(lc,-.38)}" stroke-width="1" fill="none"/><ellipse cx="102" cy="84.6" rx="3" ry="1.2" fill="#fff" opacity=".35"/>`);
   // pelo de adelante
-  if(hs==='largo') g.push(`<path d="M68,60 Q68,23 100,23 Q132,23 132,60 Q122,40 104,38 Q90,48 72,52 Z" fill="${hc}"/>`);
-  if(hs==='bob') g.push(`<path d="M68,64 Q66,23 100,23 Q134,23 132,64 Q126,44 112,40 Q100,50 86,42 Q74,48 68,64 Z" fill="${hc}"/>`);
-  if(hs==='rodete') g.push(`<path d="M70,56 Q72,26 100,26 Q128,26 130,56 Q116,36 100,36 Q84,36 70,56 Z" fill="${hc}"/>`);
-  if(hs==='ondas') g.push(`<path d="M68,62 Q66,21 100,21 Q134,21 132,62 Q124,42 114,44 Q106,34 96,42 Q84,36 76,48 Q70,52 68,62Z" fill="${hc}"/>`);
-  // accesorios de cabeza y mano
-  if(a.shape==='aros') g.push(`<circle cx="70" cy="77" r="6" fill="none" stroke="${a.color}" stroke-width="2.5"/><circle cx="130" cy="77" r="6" fill="none" stroke="${a.color}" stroke-width="2.5"/>`);
-  if(a.shape==='lentes') g.push(`<circle cx="89" cy="57" r="10" fill="${a.color}" opacity=".92"/><circle cx="111" cy="57" r="10" fill="${a.color}" opacity=".92"/><path d="M98,55 Q100,52 102,55" fill="none" stroke="${a.color}" stroke-width="2.5"/><path d="M83,52 L87,50" stroke="#fff" stroke-width="1.5" opacity=".6"/>`);
-  if(a.shape==='gorra') g.push(`<path d="M67,46 Q67,14 100,14 Q133,14 133,46 Z" fill="${a.color}"/><ellipse cx="100" cy="46" rx="38" ry="6" fill="${a.color}"/><ellipse cx="100" cy="45" rx="38" ry="3" fill="rgba(0,0,0,.18)"/>`);
-  if(a.shape==='cartera') g.push(`<path d="M140,212 Q152,192 164,212" fill="none" stroke="${a.color}" stroke-width="3"/><rect x="135" y="210" width="34" height="27" rx="6" fill="${a.color}"/><rect x="149" y="218" width="6" height="4" rx="1" fill="#E2B347"/>`);
-  return `<svg viewBox="0 0 200 400" role="img" aria-label="Tu personaje">${g.join('')}</svg>`;
+  if(hs==='largo') body.push(`<path d="M68,64 C66,30 84,20 100,20 C118,20 134,30 132,64 C128,46 118,36 106,34 C98,46 84,54 70,60 Z" fill="${H}"/><path d="M68,58 C64,82 66,102 63,122 L72,114 C72,96 72,80 74,62 Z" fill="${H}"/><path d="M132,58 C136,82 134,102 137,122 L128,114 C128,96 128,80 126,62 Z" fill="${H}"/><path d="M104,24 C96,34 86,44 74,52" stroke="${hcL}" stroke-width="2" fill="none" opacity=".6"/>`);
+  if(hs==='bob') body.push(`<path d="M66,68 C64,28 84,20 100,20 C116,20 136,28 134,68 L137,106 L127,106 C126,86 127,66 124,52 C112,46 88,46 76,52 C73,66 74,86 73,106 L63,106 Z" fill="${H}"/><path d="M74,54 C80,30 120,30 126,54 C114,47 86,47 74,54Z" fill="${H}"/><path d="M84,32 Q100,26 116,32" stroke="${hcL}" stroke-width="2" fill="none" opacity=".6"/>`);
+  if(hs==='rodete') body.push(`<path d="M70,58 C70,30 84,22 100,22 C116,22 130,30 130,58 C122,40 112,34 100,34 C88,34 78,40 70,58 Z" fill="${H}"/><path d="M80,34 Q100,24 120,34" stroke="${hcL}" stroke-width="1.6" fill="none" opacity=".6"/><path d="M84,8 Q100,16 116,8" stroke="#C81D6B" stroke-width="3" fill="none"/>`);
+  if(hs==='ondas') body.push(`<path d="M66,66 C62,26 84,18 100,18 C116,18 138,26 134,66 C128,46 120,40 112,42 C106,32 94,32 88,40 C80,38 72,46 66,66 Z" fill="${H}"/><path d="M68,62 C60,76 70,86 64,100 C60,110 68,118 66,126 L74,118 C74,104 72,84 74,66Z" fill="${H}"/><path d="M132,62 C140,76 130,86 136,100 C140,110 132,118 134,126 L126,118 C126,104 128,84 126,66Z" fill="${H}"/>`);
+  // accesorios de cabeza
+  if(a.shape==='aros') body.push(`<circle cx="69" cy="80" r="6.5" fill="none" stroke="url(#${id}g)" stroke-width="2.6"/><circle cx="131" cy="80" r="6.5" fill="none" stroke="url(#${id}g)" stroke-width="2.6"/>`);
+  if(a.shape==='lentes') body.push(`<path d="M74,52 L126,52" stroke="${a.color}" stroke-width="3"/>`+pair(`<path d="M77,52 L99,52 Q99,68 88,68 Q77,68 77,52Z" fill="#3B2A4A" opacity=".95"/><path d="M81,55 L87,62" stroke="#FF9CC6" stroke-width="2" opacity=".6"/>`));
+  if(a.shape==='gorra') body.push(`<path d="M66,48 Q66,12 100,12 Q134,12 134,48 Z" fill="${a.color}"/><path d="M66,48 Q66,12 100,12 Q134,12 134,48 Z" fill="${F}"/><path d="M100,12 L100,46" stroke="${shade(a.color,-.25)}" stroke-width="1.5"/><path d="M62,48 Q100,40 138,48 Q140,56 128,55 Q100,50 72,55 Q60,56 62,48Z" fill="${shade(a.color,-.18)}"/><circle cx="100" cy="13" r="2.5" fill="${shade(a.color,-.25)}"/>`);
+  g.push(opt.still ? body.join('') : `<g class="breathe">${body.join('')}</g>`);
+  const vb = opt.vb || '0 0 200 400';
+  return `<svg class="av" viewBox="${vb}" role="img" aria-label="${opt.label||'Tu personaje'}">${defs}${g.join('')}</svg>`;
 }
 
 function applyWear(w, it){
   if(it.slot==='dress') w.dress = it.id;
   else { w[it.slot] = it.id; if(it.slot==='top'||it.slot==='bottom') w.dress = null; }
 }
+const CROP = {top:'36 96 128 128', bottom:'40 186 120 196', dress:'30 98 140 290', shoes:'54 338 92 56', hair:'48 2 104 116', hairColor:'48 2 104 116', lips:'78 54 44 44', eyes:'74 36 52 40', blush:'64 44 72 50'};
+function thumb(it){
+  const w = {...S.wear}; applyWear(w,it);
+  let vb = CROP[it.slot];
+  if(it.slot==='acc') vb = {cartera:'104 100 92 150', perlas:'62 70 76 66', choker:'62 70 76 66'}[it.shape] || CROP.hair;
+  if(it.slot==='dress' && it.shape==='largo') vb = '22 98 156 296';
+  return avatar(w, S.skin, {vb, still:true, label:it.name});
+}
+
+/* ---------- Personajes de la historia ---------- */
+const NPCS = {
+  lu:{name:'Lu', skin:3, w:{hair:'h_ondas',hairColor:'hc_negro',lips:'l_rosa',eyes:'e_violeta',acc:'a_aros',blush:'bl_si',top:'t_crop_brillos'}},
+  cami:{name:'Cami', skin:2, w:{hair:'h_largo',hairColor:'hc_rubio',lips:'l_rosa',blush:'bl_si',eyes:'e_rosa'}},
+  martina:{name:'Martina', skin:0, w:{hair:'h_bob',hairColor:'hc_rojo',lips:'l_bordo',eyes:'e_ahumado',acc:'a_choker',top:'t_remera_negra'}},
+  rosa:{name:'Tía Rosa', skin:1, w:{hair:'h_rodete',hairColor:'hc_gris',lips:'l_bordo',acc:'a_perlas',blush:'bl_si',top:'t_blusa_seda'}},
+  casting:{name:'Casting', skin:4, w:{hair:'h_bob',hairColor:'hc_negro',lips:'l_rojo',acc:'a_lentes',top:'t_campera_cuero'}},
+  valentina:{name:'Valentina', skin:4, w:{hair:'h_rodete',hairColor:'hc_negro',lips:'l_rojo',eyes:'e_dorado',acc:'a_aros',top:'t_blusa_roja'}},
+};
+function portrait(k){ const n=NPCS[k]; return avatar({...BASEW,...n.w}, n.skin, {vb:'52 4 96 124', still:true, label:n.name}); }
+
+/* ---------- Fondos ---------- */
+function bg(key){
+  const id = 'b'+(++UID); const r = rng(key.length*97+7); let s = '';
+  if(key==='city'){
+    s += `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2B1B5A"/><stop offset=".55" stop-color="#C2457A"/><stop offset="1" stop-color="#F7A56B"/></linearGradient></defs><rect width="400" height="260" fill="url(#${id})"/>`;
+    s += `<circle cx="310" cy="150" r="36" fill="#FFD39A" opacity=".85"/><circle cx="310" cy="150" r="54" fill="#FFD39A" opacity=".18"/>`;
+    for(let i=0;i<14;i++) s += `<circle class="tw" cx="${(r()*400).toFixed(0)}" cy="${(r()*70).toFixed(0)}" r="${(r()*1.2+.5).toFixed(1)}" fill="#fff"/>`;
+    let x=-10; while(x<410){ const bw=24+r()*30, bh=70+r()*80; s += `<rect x="${x.toFixed(0)}" y="${(225-bh).toFixed(0)}" width="${bw.toFixed(0)}" height="${bh.toFixed(0)}" fill="#6A3274" opacity=".7"/>`; x+=bw+4; }
+    x=-6; while(x<410){ const bw=30+r()*36, bh=50+r()*90, y=232-bh; s += `<rect x="${x.toFixed(0)}" y="${y.toFixed(0)}" width="${bw.toFixed(0)}" height="${bh.toFixed(0)}" fill="#2A1638"/>`;
+      for(let wy=y+8; wy<226; wy+=12) for(let wx=x+5; wx<x+bw-6; wx+=9) if(r()<.42) s += `<rect x="${wx.toFixed(0)}" y="${wy.toFixed(0)}" width="4" height="6" fill="#FFD98A" opacity="${(.5+r()*.5).toFixed(2)}"/>`;
+      x+=bw+3; }
+    s += `<rect y="228" width="400" height="32" fill="#1C0F27"/><rect y="228" width="400" height="3" fill="#FF8CC0" opacity=".5"/>`;
+  }
+  if(key==='home'){
+    s += `<rect width="400" height="260" fill="#F6DCE4"/>`;
+    for(let i=0;i<20;i++) s += `<rect x="${i*22}" width="10" height="200" fill="#fff" opacity=".35"/>`;
+    s += `<rect x="248" y="34" width="112" height="120" rx="6" fill="#FFF7F0"/><rect x="256" y="42" width="96" height="104" fill="#2B1B5A"/><circle cx="330" cy="62" r="10" fill="#FFF3C4"/>`;
+    let x=256; while(x<352){ const bw=10+r()*14, bh=20+r()*44; s += `<rect x="${x.toFixed(0)}" y="${(146-bh).toFixed(0)}" width="${Math.min(bw,352-x).toFixed(0)}" height="${bh.toFixed(0)}" fill="#4A2A66"/>`; x+=bw+2; }
+    s += `<path d="M302,42 L302,146 M256,94 L352,94" stroke="#FFF7F0" stroke-width="5"/><path d="M240,26 Q248,90 236,160 L254,160 Q262,90 256,26Z" fill="#E86A9A"/><path d="M368,26 Q360,90 372,160 L354,160 Q346,90 352,26Z" fill="#E86A9A"/><rect x="232" y="22" width="144" height="6" rx="3" fill="#B88A1E"/>`;
+    s += `<rect y="196" width="400" height="64" fill="#C99A7A"/>`; for(let i=0;i<8;i++) s += `<path d="M${i*56},196 L${i*56-30},260" stroke="#B4856A" stroke-width="2"/>`;
+    s += `<ellipse cx="200" cy="236" rx="150" ry="18" fill="#E86A9A" opacity=".55"/><ellipse cx="200" cy="236" rx="120" ry="12" fill="#FFB3D3" opacity=".5"/>`;
+    s += `<path d="M40,196 L46,120 L58,120 L64,196Z" fill="#8E5A3A"/><path d="M30,120 L74,120 L64,92 L40,92Z" fill="#FFE7A8"/><circle cx="52" cy="110" r="30" fill="#FFE7A8" opacity=".25"/>`;
+    s += `<path d="M110,196 L114,170 L134,170 L138,196Z" fill="#C81D6B"/><path d="M124,170 C110,150 96,148 98,130 C112,138 120,150 124,170 C126,146 134,130 148,124 C146,144 136,156 124,170Z" fill="#3C8A5A"/>`;
+  }
+  if(key==='party'){
+    s += `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#120A2A"/><stop offset="1" stop-color="#4A1E6E"/></linearGradient></defs><rect width="400" height="260" fill="url(#${id})"/>`;
+    for(let i=0;i<30;i++) s += `<circle class="tw" cx="${(r()*400).toFixed(0)}" cy="${(r()*140).toFixed(0)}" r="${(r()*1.3+.4).toFixed(1)}" fill="#fff"/>`;
+    let x=0; while(x<400){ const bw=16+r()*24, bh=20+r()*50; s += `<rect x="${x.toFixed(0)}" y="${(200-bh).toFixed(0)}" width="${bw.toFixed(0)}" height="${bh.toFixed(0)}" fill="#2B1440"/>`; x+=bw+2; }
+    const cols = ['#FFD36E','#FF7EB6','#7EE0FF','#B69CFF'];
+    [[-10,40,200,70,410,30],[-10,90,200,120,410,80]].forEach(([x1,y1,cx,cy,x2,y2],row)=>{
+      s += `<path d="M${x1},${y1} Q${cx},${cy+40} ${x2},${y2}" stroke="#2A1838" stroke-width="1.5" fill="none" opacity=".8"/>`;
+      for(let i=1;i<14;i++){ const t=i/14, bx=(1-t)*(1-t)*x1+2*(1-t)*t*cx+t*t*x2, by=(1-t)*(1-t)*y1+2*(1-t)*t*(cy+40)+t*t*y2; const c=cols[(i+row)%4];
+        s += `<circle class="tw" cx="${bx.toFixed(0)}" cy="${(by+5).toFixed(0)}" r="9" fill="${c}" opacity=".25"/><circle cx="${bx.toFixed(0)}" cy="${(by+5).toFixed(0)}" r="3.4" fill="${c}"/>`; }
+    });
+    s += `<rect y="200" width="400" height="60" fill="#2A1A33"/>`; for(let i=0;i<9;i++) s += `<path d="M0,${206+i*7} L400,${206+i*7}" stroke="#3A2546" stroke-width="2"/>`;
+    s += `<rect y="178" width="400" height="5" fill="#D9A93A" opacity=".8"/>`; for(let i=0;i<=20;i++) s += `<rect x="${i*20}" y="178" width="3" height="24" fill="#D9A93A" opacity=".6"/>`;
+    s += `<ellipse cx="200" cy="240" rx="120" ry="16" fill="#FF7EB6" opacity=".18"/>`;
+  }
+  if(key==='studio'){
+    s += `<defs><radialGradient id="${id}" cx=".5" cy=".55" r=".7"><stop offset="0" stop-color="#F4F0F8"/><stop offset=".6" stop-color="#D6CEE0"/><stop offset="1" stop-color="#9E93AE"/></radialGradient></defs><rect width="400" height="260" fill="url(#${id})"/>`;
+    s += `<path d="M0,210 Q200,190 400,210 L400,260 L0,260Z" fill="#CFC5DA"/>`;
+    [[40,1],[360,-1]].forEach(([cx,d])=>{
+      s += `<path d="M${cx},120 L${cx-14},250 M${cx},120 L${cx+14},250 M${cx},120 L${cx},250" stroke="#3A2F44" stroke-width="2.5"/>`;
+      s += `<g transform="rotate(${d*-18} ${cx} 80)"><rect x="${cx-34}" y="40" width="68" height="80" rx="4" fill="#2A2232"/><rect x="${cx-28}" y="46" width="56" height="68" rx="2" fill="#FFFDF6"/></g>`;
+      s += `<path d="M${cx+d*20},80 L${200-d*20},60 L${200-d*10},250 L${cx+d*30},250Z" fill="#FFFDF6" opacity=".18"/>`;
+    });
+    s += `<circle class="flash" cx="320" cy="60" r="40" fill="#fff"/>`;
+  }
+  if(key==='gala'){
+    s += `<defs><linearGradient id="${id}c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7A0F24"/><stop offset="1" stop-color="#C2183A"/></linearGradient><linearGradient id="${id}l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>`;
+    s += `<rect width="400" height="260" fill="#2A0F2A"/>`;
+    for(let y=14;y<190;y+=30) for(let x=(y/30%2)*30; x<400; x+=60) s += `<text x="${x}" y="${y}" font-family="Georgia,serif" font-style="italic" font-weight="900" font-size="15" fill="#D9A93A" opacity=".28">VP</text>`;
+    s += `<path class="beam" d="M60,0 L20,260 L130,260 Z" fill="url(#${id}l)" opacity=".5"/><path class="beam" d="M340,0 L270,260 L380,260 Z" fill="url(#${id}l)" opacity=".5" style="animation-delay:-3s"/>`;
+    s += `<path d="M150,180 L250,180 L330,260 L70,260Z" fill="url(#${id}c)"/><path d="M150,180 L250,180" stroke="#E2B347" stroke-width="2"/>`;
+    [[60,190],[340,190],[30,225],[370,225]].forEach(([x,y])=>{ s += `<rect x="${x-3}" y="${y}" width="6" height="40" fill="#E2B347"/><circle cx="${x}" cy="${y}" r="5" fill="#FFE9A8"/>`; });
+    s += `<path d="M60,196 Q45,212 30,231 M340,196 Q355,212 370,231" stroke="#8E1B4C" stroke-width="4" fill="none"/>`;
+    for(let i=0;i<7;i++) s += `<circle class="flash" cx="${(20+r()*360).toFixed(0)}" cy="${(30+r()*120).toFixed(0)}" r="${(10+r()*16).toFixed(0)}" fill="#fff" style="animation-delay:${(r()*3).toFixed(2)}s"/>`;
+  }
+  if(key==='shop'){
+    s += `<rect width="400" height="260" fill="#F7E6EE"/><rect width="400" height="40" fill="#EFD4E1"/>`;
+    for(let i=0;i<6;i++) s += `<path d="M${i*80},0 Q${i*80+40},30 ${i*80+80},0" fill="#E86A9A" opacity=".55"/>`;
+    s += `<path d="M14,62 L170,62" stroke="#B88A1E" stroke-width="4" stroke-linecap="round"/><path d="M20,62 L20,214 M164,62 L164,214" stroke="#B88A1E" stroke-width="3"/>`;
+    const cl=['#F2A7B8','#86BCE8','#2B262F','#E2B347','#B68FE8','#C8283C','#EED3C2'];
+    for(let i=0;i<7;i++){ const x=30+i*20, c=cl[i]; s += `<path d="M${x+6},62 Q${x+6},56 ${x+10},58" stroke="#8A6A3A" stroke-width="1.4" fill="none"/><path d="M${x},68 L${x+12},68 L${x+16},${120+(i%3)*14} L${x-4},${120+(i%3)*14}Z" fill="${c}"/><path d="M${x},68 L${x+12},68 L${x+16},${120+(i%3)*14} L${x-4},${120+(i%3)*14}Z" fill="#000" opacity=".08"/>`; }
+    s += `<ellipse cx="330" cy="120" rx="44" ry="74" fill="#D9A93A"/><ellipse cx="330" cy="120" rx="37" ry="67" fill="#E9F1F7"/><path d="M310,80 L330,70 M306,100 L340,80" stroke="#fff" stroke-width="4" opacity=".8"/>`;
+    s += `<rect y="214" width="400" height="46" fill="#E4CBC0"/><ellipse cx="200" cy="240" rx="110" ry="14" fill="#fff" opacity=".4"/>`;
+    s += `<rect x="190" y="150" width="70" height="64" rx="6" fill="#fff" opacity=".7"/><rect x="198" y="160" width="20" height="24" rx="3" fill="#B3364F"/><rect x="226" y="166" width="26" height="18" rx="3" fill="#E2B347"/>`;
+  }
+  return `<svg class="bg" viewBox="0 0 400 260" preserveAspectRatio="xMidYMax slice" aria-hidden="true">${s}</svg>`;
+}
+const stage = (w, key='home', size='') => `<div class="stage ${size} ${ui.pop?'pop':''}">${bg(key)}<div class="fig">${avatar(w||S.wear, S.skin)}</div></div>`;
 
 /* ---------- Eventos de moda ---------- */
 function scoreOutfit(themes){
@@ -321,15 +554,15 @@ function scoreOutfit(themes){
   return {stars, good, bad};
 }
 const EVENTS = {
-  fiesta:{title:'Fiesta en la terraza', themes:['fiesta'], hint:'Brillos, color y algo cómodo para bailar toda la noche.', next:'HUB:c2_inicio',
+  fiesta:{title:'Fiesta en la terraza', bg:'party', themes:['fiesta'], hint:'Brillos, color y algo cómodo para bailar toda la noche.', next:'HUB:c2_inicio',
     result:st=> st>=4 ? (S.flags.martina=true, {fx:{fame:2,mood:1}, text:`¡Todas las miradas fueron para vos! Una fotógrafa llamada <b>Martina</b> te pidió tu número para una sesión.`})
       : st===3 ? {fx:{fame:1}, text:'La pasaste bien y tu look gustó. Hiciste un par de contactos nuevos.'}
       : {fx:{mood:-1}, text:'Tu look no terminó de encajar con la fiesta. Nadie te dijo nada… pero vos lo sentiste.'}},
-  casting:{title:'Casting de campaña', themes:['elegante'], hint:'La marca busca un look elegante y prolijo.', next:'HUB:c3_inicio',
+  casting:{title:'Casting de campaña', bg:'studio', themes:['elegante'], hint:'La marca busca un look elegante y prolijo.', next:'HUB:c3_inicio',
     result:st=> st>=4 ? (S.flags.campania=true, {fx:{money:400,fame:3}, text:'¡Quedaste! Vas a ser la cara de la nueva campaña. Te pagan <b>$400</b>.'})
       : st===3 ? {fx:{money:100,fame:1}, text:'Quedaste en la lista de suplentes. Te pagaron $100 por la prueba.'}
       : {fx:{mood:-1}, text:'Esta vez no quedaste. La directora de casting te dijo: “buscábamos algo más elegante”.'}},
-  gala:{title:'Gala de la Semana de la Moda', themes:['elegante','fiesta'], hint:'Elegante y con brillo. Es la noche más importante del año.', next:'final',
+  gala:{title:'Gala de la Semana de la Moda', bg:'gala', themes:['elegante','fiesta'], hint:'Elegante y con brillo. Es la noche más importante del año.', next:'final',
     result:st=>{
       const fx={fame:st}; let text = st>=4 ? 'Saliste en todas las fotos de la alfombra roja. ' : st===3 ? 'Tu look estuvo bien, aunque no fue de los más comentados. ' : 'La prensa no te prestó mucha atención esta noche. ';
       const p=S.flags.path;
@@ -339,40 +572,41 @@ const EVENTS = {
       return {fx,text};
     }},
 };
+const VERDICT = ['','Ups…','Puede mejorar','¡Lindo look!','¡Divino!','¡Ícono total!'];
 
 /* ---------- Historia ---------- */
 const SCENES = {
-  c1_llegada:{ch:1, text:()=>`${N()}, tenés 19 años, $300 en el bolsillo y una valija con poca ropa. Llegaste a la gran ciudad con un sueño: hacerte un nombre en el mundo de la moda.<br><br>Primero lo primero: ¿dónde vas a vivir?`,
+  c1_llegada:{ch:1, bg:'city', text:()=>`${N()}, tenés 19 años, $300 en el bolsillo y una valija con poca ropa. Llegaste a la gran ciudad con un sueño: hacerte un nombre en el mundo de la moda.<br><br>Primero lo primero: ¿dónde vas a vivir?`,
     choices:()=>[
       {t:'Compartir depto con Lu, que conociste por internet', n:'−$100 · alquiler $100 por capítulo · +1 ánimo', fx:{money:-100,mood:1}, set:()=>S.home='lu', go:'c1_trabajo'},
       {t:'Alquilar un monoambiente para vos', n:'−$200 · alquiler $200 por capítulo · +2 ánimo', fx:{money:-200,mood:2}, set:()=>S.home='solo', go:'c1_trabajo'},
       {t:'Quedarte en lo de tu tía Rosa', n:'Gratis, pero tiene sus reglas · −1 ánimo', fx:{mood:-1}, set:()=>S.home='tia', go:'c1_trabajo'},
     ]},
-  c1_trabajo:{ch:1, text:()=>`Ya tenés dónde dormir. Ahora necesitás plata para vivir… y para la ropa. Te ofrecen tres cosas:`,
+  c1_trabajo:{ch:1, bg:'city', npc:()=>S.home==='lu'?'lu':S.home==='tia'?'rosa':null, text:()=> (S.home==='lu'?'Lu te recibe con un abrazo: “¡Bienvenida al depto!”. ':S.home==='tia'?'La tía Rosa te prepara la cama y te recuerda: “En esta casa se cena a las nueve”. ':'Tu monoambiente es chiquito, pero es todo tuyo. ')+`Ahora necesitás plata para vivir… y para la ropa. Te ofrecen tres cosas:`,
     choices:()=>[
       {t:'Atender en una tienda de ropa del centro', n:'$150 por capítulo · 20% de descuento en la tienda · +1 fama', fx:{fame:1}, set:()=>S.job='tienda', go:'HUB:c1_fiesta'},
       {t:'Trabajar en una cafetería', n:'$250 por capítulo', set:()=>S.job='cafe', go:'HUB:c1_fiesta'},
       {t:'Anotarte en la escuela de diseño', n:'Cuesta $100, sin sueldo · +1 fama en cada capítulo', req:()=>S.money>=100, why:'Necesitás $100', fx:{money:-100}, set:()=>{S.job='escuela';S.flags.escuela=true;}, go:'HUB:c1_fiesta'},
     ]},
-  c1_fiesta:{ch:1, text:()=>{
-      const quien = S.home==='lu' ? 'Lu' : S.job==='cafe' ? 'Joaco, tu compañero de la cafetería' : S.job==='tienda' ? 'Cami, tu compañera de la tienda' : 'Cami, tu compañera de la escuela';
-      return `Es viernes a la noche. ${quien} te invita a una fiesta en una terraza. Dicen que va a ir gente del mundo de la moda.`; },
+  c1_fiesta:{ch:1, bg:'party', npc:()=>S.home==='lu'?'lu':'cami', text:()=>{
+      const quien = S.home==='lu' ? 'Lu' : S.job==='cafe' ? 'Cami, tu compañera de la cafetería' : S.job==='tienda' ? 'Cami, tu compañera de la tienda' : 'Cami, tu compañera de la escuela';
+      return `“¡Es viernes!” ${quien} te invita a una fiesta en una terraza. Dicen que va a ir gente del mundo de la moda.`; },
     choices:()=>[
       {t:'¡Vamos! Elegir el look', n:'Evento de moda: estilo Fiesta', event:'fiesta'},
       {t:'Quedarte en casa a descansar', n:'+1 ánimo', fx:{mood:1}, go:'HUB:c2_inicio'},
     ]},
-  c2_inicio:{ch:2, text:()=> S.flags.martina
-      ? `Martina, la fotógrafa que conociste en la fiesta, te escribe: quiere hacerte una sesión de fotos para su portfolio.`
-      : `Una fotógrafa llamada Martina vio tus fotos en redes y te escribe: quiere hacerte una sesión para su portfolio.`,
+  c2_inicio:{ch:2, bg:'studio', npc:()=>'martina', text:()=> S.flags.martina
+      ? `“¡Hola! Soy Martina, nos conocimos en la fiesta.” Quiere hacerte una sesión de fotos para su portfolio.`
+      : `“Hola, soy Martina. Vi tus fotos en redes y me encantó tu estilo.” Quiere hacerte una sesión para su portfolio.`,
     choices:()=>[
       {t:'Aceptar gratis, por la experiencia', n:'+2 fama', fx:{fame:2}, set:()=>S.flags.amigaMartina=true, go:'c2_problema'},
       {t:'Aceptar, pero cobrarle', n:'+$120 · +1 fama', fx:{money:120,fame:1}, go:'c2_problema'},
       {t:'Decirle que no tenés tiempo', n:'+1 ánimo', fx:{mood:1}, go:'c2_problema'},
     ]},
-  c2_problema:{ch:2, text:()=> S.home==='lu'
-      ? `Lu llega llorando: la echaron del trabajo y no puede pagar su parte del alquiler este mes.`
+  c2_problema:{ch:2, bg:'home', npc:()=>S.home==='lu'?'lu':S.home==='tia'?'rosa':null, text:()=> S.home==='lu'
+      ? `Lu llega llorando: “Me echaron del trabajo y no puedo pagar mi parte del alquiler este mes”.`
       : S.home==='solo' ? `Se rompió el calefón del monoambiente. Hace frío y el arreglo sale $150.`
-      : `Tu tía Rosa cumple 60 y te pide ayuda con la fiesta del sábado… justo el día de un evento de moda importante.`,
+      : `“Cumplo 60 y quiero que me ayudes con la fiesta del sábado”, te pide la tía Rosa. Justo ese día hay un evento de moda importante.`,
     choices:()=> S.home==='lu' ? [
       {t:'Pagarle su parte', n:'−$150 · +2 ánimo', req:()=>S.money>=150, why:'Necesitás $150', fx:{money:-150,mood:2}, set:()=>S.flags.lu=true, go:'HUB:c2_casting'},
       {t:'Ayudarla a buscar trabajo', n:'+1 ánimo', fx:{mood:1}, go:'HUB:c2_casting'},
@@ -386,21 +620,21 @@ const SCENES = {
       {t:'Ir al evento de moda', n:'+2 fama · −1 ánimo', fx:{fame:2,mood:-1}, go:'HUB:c2_casting'},
       {t:'Hacer las dos cosas corriendo', n:'+1 fama · −1 ánimo', fx:{fame:1,mood:-1}, go:'HUB:c2_casting'},
     ]},
-  c2_casting:{ch:2, text:()=>`Te llega un mensaje: hay un <b>casting</b> para la campaña de una marca de ropa conocida. Buscan un look <b>elegante</b>.`,
+  c2_casting:{ch:2, bg:'studio', npc:()=>'casting', text:()=>`“Hacemos un <b>casting</b> para la campaña de una marca de ropa conocida. Buscamos un look <b>elegante</b>.”`,
     choices:()=>[
       {t:'¡Ir al casting! Elegir el look', n:'Evento de moda: estilo Elegante', event:'casting'},
       {t:'Mandar solo fotos por mail', n:'Más fácil, pero menos chances', go:'c2_fotos'},
     ]},
-  c2_fotos:{ch:2, text:()=>`Te respondieron con un mensaje automático: “Gracias por participar”. Bueno, otra vez será.`,
+  c2_fotos:{ch:2, bg:'home', text:()=>`Te respondieron con un mensaje automático: “Gracias por participar”. Bueno, otra vez será.`,
     choices:()=>[{t:'Seguir adelante', go:'HUB:c3_inicio'}]},
-  c3_inicio:{ch:3, text:()=>`Tu nombre empieza a sonar en el ambiente. Te llegan propuestas que pueden cambiarte la vida. ¿Cuál elegís?`,
+  c3_inicio:{ch:3, bg:'city', npc:()=>'valentina', text:()=>`Tu nombre empieza a sonar. La famosa diseñadora Valentina Roux te escribe, y no es la única: te llegan propuestas que pueden cambiarte la vida. ¿Cuál elegís?`,
     choices:()=>[
-      {t:'Ser asistente de la diseñadora Valentina Roux', n:'Sueldo de $400 por capítulo', set:()=>{S.job='asistente';S.flags.path='asistente';}, go:'HUB:c3_gala'},
+      {t:'Ser asistente de Valentina Roux', n:'Sueldo de $400 por capítulo', set:()=>{S.job='asistente';S.flags.path='asistente';}, go:'HUB:c3_gala'},
       {t:'Lanzar tu propia línea de ropa', n:'Inversión de $600 · si la gala sale bien, ganás mucho', req:()=>S.money>=600, why:'Necesitás $600', fx:{money:-600}, set:()=>S.flags.path='marca', go:'HUB:c3_gala'},
       {t:'Volverte influencer de moda', n:'Necesitás 5 de fama · +2 fama', req:()=>S.fame>=5, why:'Necesitás 5 de fama', fx:{fame:2}, set:()=>S.flags.path='influencer', go:'HUB:c3_gala'},
       {t:'Seguir como hasta ahora', n:'+1 ánimo', fx:{mood:1}, set:()=>S.flags.path='tranqui', go:'HUB:c3_gala'},
     ]},
-  c3_gala:{ch:3, text:()=>`Llegó la noche: la gala de cierre de la Semana de la Moda. Fotógrafos, diseñadores y alfombra roja. Todo lo que hiciste te trajo hasta acá.`,
+  c3_gala:{ch:3, bg:'gala', text:()=>`Llegó la noche: la gala de cierre de la Semana de la Moda. Fotógrafos, diseñadores y alfombra roja. Todo lo que hiciste te trajo hasta acá.`,
     choices:()=>[{t:'Elegir el look de mi vida', n:'Evento final: Elegante y Fiesta', event:'gala'}]},
 };
 
@@ -420,7 +654,9 @@ function newChapter(n){
   const pay = JOBS[S.job]?.pay||0, rent = HOMES[S.home]?.rent||0;
   S.money += pay - rent;
   if(S.flags.escuela) S.fame += 1;
-  S.notice = `Capítulo nuevo. ${pay?`Cobraste $${pay}`:'Este capítulo no cobraste sueldo'}${rent?` y pagaste $${rent} de alquiler`:''}.${S.flags.escuela?' Tus profes de diseño te recomiendan: +1 fama.':''} Tu energía se recargó.`;
+  S.notice = `${pay?`Cobraste $${pay}`:'Este capítulo no cobraste sueldo'}${rent?` y pagaste $${rent} de alquiler`:''}.${S.flags.escuela?' Tus profes de diseño te recomiendan: +1 fama.':''} Tu energía se recargó.`;
+  bumpKeys.push('money');
+  chapterCard(n);
 }
 function enterScene(id){
   if(id==='final'){ S.scene='final'; S.done=true; return; }
@@ -435,22 +671,61 @@ function goScene(target){
 }
 const scrollTop = () => document.getElementById('main').scrollTo(0,0);
 
+/* ---------- Efectos ---------- */
+function chapterCard(n){
+  document.getElementById('chcard')?.remove();
+  const d = document.createElement('div'); d.id='chcard';
+  d.innerHTML = `<span class="eyebrow">Capítulo</span><span class="n">${n}</span><span class="t">${CH[n]}</span>`;
+  const close = () => { d.classList.add('out'); setTimeout(()=>d.remove(),500); };
+  d.addEventListener('click', close);
+  document.body.appendChild(d);
+  setTimeout(close, 2300);
+}
+function confetti(n=140){
+  if(REDUCED) return;
+  const cv = document.getElementById('fx'), ctx = cv.getContext('2d');
+  const W = cv.width = innerWidth, H = cv.height = innerHeight;
+  const cols = ['#FF5C9F','#E2B347','#9B5CF6','#4FD1AE','#FFFFFF','#FF8CC0'];
+  const ps = Array.from({length:n},()=>({x:W/2+(Math.random()-.5)*80, y:H*.35, vx:(Math.random()-.5)*9, vy:-Math.random()*10-3, r:Math.random()*6+3, c:cols[Math.random()*cols.length|0], a:Math.random()*6, va:(Math.random()-.5)*.3}));
+  let t0 = performance.now();
+  (function f(t){
+    const k = (t-t0)/1000; ctx.clearRect(0,0,W,H);
+    ps.forEach(p=>{ p.vy+=.25; p.vx*=.99; p.x+=p.vx; p.y+=p.vy; p.a+=p.va; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.fillStyle=p.c; ctx.globalAlpha=Math.max(0,1-k/3); ctx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2); ctx.restore(); });
+    if(k<3) requestAnimationFrame(f); else ctx.clearRect(0,0,W,H);
+  })(t0);
+}
+function sparkleAt(el){
+  if(REDUCED || !el) return;
+  const cv = document.getElementById('fx'), ctx = cv.getContext('2d');
+  const W = cv.width = innerWidth, H = cv.height = innerHeight; const b = el.getBoundingClientRect();
+  const cx = b.left+b.width/2, cy = b.top+b.height/2;
+  const ps = Array.from({length:26},(_,i)=>({a:i/26*Math.PI*2, d:0, s:2+Math.random()*3, c:i%2?'#E2B347':'#FF8CC0'}));
+  let t0 = performance.now();
+  (function f(t){
+    const k = (t-t0)/700; ctx.clearRect(0,0,W,H);
+    ps.forEach(p=>{ const d = k*b.width*.55; const x=cx+Math.cos(p.a)*d, y=cy+Math.sin(p.a)*d*.8; ctx.globalAlpha=Math.max(0,1-k); ctx.fillStyle=p.c; ctx.beginPath(); ctx.moveTo(x,y-p.s*2); ctx.lineTo(x+p.s*.6,y); ctx.lineTo(x,y+p.s*2); ctx.lineTo(x-p.s*.6,y); ctx.closePath(); ctx.fill(); });
+    if(k<1) requestAnimationFrame(f); else ctx.clearRect(0,0,W,H);
+  })(t0);
+}
+
 /* ---------- Pantallas ---------- */
 function rStats(){
   const h = document.getElementById('stats');
   if(S.scene==='setup'){ h.innerHTML=''; return; }
-  h.innerHTML = `<span class="chip money ${S.money<0?'neg':''}" aria-label="Dinero">$ ${S.money}</span><span class="chip fame" aria-label="Fama">★ ${S.fame} fama</span><span class="chip mood" aria-label="Ánimo">♥ ${S.mood}/10</span>`;
+  const b = k => bumpKeys.includes(k) ? 'bump' : '';
+  h.innerHTML = `<span class="mono">VP</span><span class="chip money ${S.money<0?'neg':''} ${b('money')}" aria-label="Dinero">$ ${S.money}</span><span class="chip fame ${b('fame')}" aria-label="Fama">${icon('estrellaF')} ${S.fame}</span><span class="chip mood ${b('mood')}" aria-label="Ánimo">${icon('corazon')} ${S.mood}/10</span>`;
+  bumpKeys = [];
 }
-const stage = (w, sm) => `<div class="stage ${sm?'sm':''}">${avatar(w||S.wear, S.skin)}</div>`;
 const chapLabel = () => `<div class="eyebrow">Capítulo ${S.chapter} · ${CH[S.chapter]}</div>`;
+const pipsHTML = () => Array.from({length:MAXE},(_,i)=>`<span class="pip ${i<S.energy?'on':''}"></span>`).join('');
 
 function rSetup(){
-  return `<div class="stack" style="padding-top:12px">
+  return `<div class="stack" style="padding-top:14px">
     <div class="eyebrow">Una historia de moda</div>
     <h1>Vida en Pasarela</h1>
     <p class="muted">Tomá decisiones, resolvé puzzles para ganar plata y armá los looks que te van a llevar a la cima.</p>
   </div>
-  <div id="prev">${stage(null,true)}</div>
+  <div id="prev">${stage(null,'city','sm')}</div>
   <div class="stack">
     <label class="lbl" for="nombre">¿Cómo se llama tu personaje?</label>
     <input type="text" id="nombre" maxlength="16" placeholder="Escribí un nombre" value="${esc(S.name)}" autocomplete="off">
@@ -463,28 +738,30 @@ function rSetup(){
 function rStory(){
   const sc = SCENES[S.scene];
   const ch = sc.choices();
+  const npc = sc.npc ? sc.npc() : null;
   return `${chapLabel()}
     ${S.notice?`<div class="notice">${S.notice}</div>`:''}
-    ${stage(null,true)}
-    <p class="story">${sc.text()}</p>
+    ${stage(null, sc.bg, 'sm')}
+    <div class="say">${npc?`<div class="face"><div class="pic">${portrait(npc)}</div><span>${NPCS[npc].name}</span></div>`:''}<p class="story">${sc.text()}</p></div>
     <div class="choices">${ch.map((c,i)=>{const ok=!c.req||c.req();return `<button class="btn" data-act="choice" data-v="${i}" ${ok?'':'disabled'}>${c.t}${c.n||!ok?`<span class="note">${!ok?c.why+' · ':''}${c.n||''}</span>`:''}</button>`;}).join('')}</div>`;
 }
 
 function rHub(){
-  const pips = Array.from({length:MAXE},(_,i)=>`<span class="pip ${i<S.energy?'on':''}"></span>`).join('');
   const reset = ui.resetAsk
     ? `<button class="btn ghost" data-act="resetYes">Sí, borrar todo y empezar de nuevo</button><button class="linkbtn" data-act="resetNo">Mejor no</button>`
     : `<button class="linkbtn" data-act="reset">Empezar una historia nueva</button>`;
-  if(S.done) return `<div class="eyebrow">Modo libre</div><h2>Tu vida sigue</h2>${stage()}
-    <div class="info"><span class="pips">Energía ${pips}</span><span class="muted">${JOBS[S.job]?.name||''}</span></div>
-    <div class="row"><button class="btn" data-act="view" data-v="puzzles">Trabajos extra<span class="note">Puzzles por plata</span></button><button class="btn" data-act="view" data-v="closet">Vestidor<span class="note">Ropa y tienda</span></button></div>
-    <button class="btn" data-act="sleep">Dormir<span class="note">Empieza un día nuevo y se recarga la energía</span></button>
+  const actions = `<button class="btn ico" data-act="view" data-v="puzzles"><span class="ic">${icon('moneda')}</span><span>Trabajos extra<span class="note">Puzzles para ganar plata</span></span></button>
+    <button class="btn ico" data-act="view" data-v="closet"><span class="ic">${icon('vestido')}</span><span>Vestidor y tienda<span class="note">Ropa, zapatos, pelo y maquillaje</span></span></button>`;
+  if(S.done) return `<div class="eyebrow">Modo libre</div><h2>Tu vida sigue</h2>${stage(null,'home','lg')}
+    <div class="info"><span class="pips">Energía ${pipsHTML()}</span><span class="muted">${JOBS[S.job]?.name||''}</span></div>
+    ${actions}
+    <button class="btn ico" data-act="sleep"><span class="ic">${icon('casa')}</span><span>Dormir<span class="note">Empieza un día nuevo y se recarga la energía</span></span></button>
     <button class="btn ghost" data-act="showEnd">Ver mi final otra vez</button>${reset}`;
   return `${chapLabel()}<h2>Tu tiempo libre</h2>
     ${S.notice?`<div class="notice">${S.notice}</div>`:''}
-    ${stage()}
-    <div class="info"><span class="pips">Energía ${pips}</span><span class="muted">${JOBS[S.job]?.name||''} · ${HOMES[S.home]?.name||''}</span></div>
-    <div class="row"><button class="btn" data-act="view" data-v="puzzles">Trabajos extra<span class="note">Puzzles por plata</span></button><button class="btn" data-act="view" data-v="closet">Vestidor<span class="note">Ropa y tienda</span></button></div>
+    ${stage(null,'home','lg')}
+    <div class="info"><span class="pips">Energía ${pipsHTML()}</span><span class="muted">${JOBS[S.job]?.name||''} · ${HOMES[S.home]?.name||''}</span></div>
+    ${actions}
     <button class="btn primary" data-act="cont">Seguir la historia</button>
     ${reset}`;
 }
@@ -493,21 +770,18 @@ function rCloset(){
   const ev = S.scene==='event' ? EVENTS[S.event] : null;
   const tab = TABS.find(t=>t.id===ui.tab);
   const shop = ui.mode==='shop';
-  const list = ITEMS.filter(i=>tab.slots.includes(i.slot) && (shop ? !S.owned.includes(i.id) : S.owned.includes(i.id)));
+  const list = ITEMS.filter(i=>i.fx!=='oculto' && tab.slots.includes(i.slot) && (shop ? !S.owned.includes(i.id) : S.owned.includes(i.id)));
   const w = {...S.wear}; if(ui.tryOn) applyWear(w, IT[ui.tryOn]);
   const worn = id => { const it=IT[id]; return it.slot==='dress' ? w.dress===id : (it.slot==='top'||it.slot==='bottom') ? (!w.dress && w[it.slot]===id) : w[it.slot]===id; };
-  const card = it => {
-    const bg = it.color || 'var(--soft2)';
-    return `<button class="item ${worn(it.id)?'on':''}" data-act="item" data-v="${it.id}">
-      <span class="sw" style="background:${bg}">${it.ic}</span>
+  const card = it => `<button class="item ${worn(it.id)?'on':''}" data-act="item" data-v="${it.id}">
+      <span class="th">${it.slot==='hairColor' ? `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="22" fill="${it.color}"/><path d="M18,24 Q32,12 46,24" stroke="${shade(it.color,.35)}" stroke-width="4" fill="none" stroke-linecap="round"/></svg>` : thumb(it)}</span>
       <span class="nm">${it.name}</span>
       ${it.tags.length?`<span class="tags">${it.tags.map(t=>`<span class="tag ${ev&&ev.themes.includes(t)?'hit':''}">${TAGN[t]}</span>`).join('')}</span>`:''}
       ${shop?`<span class="pr">$${price(it)}</span>`:''}
     </button>`;
-  };
   const tryIt = ui.tryOn ? IT[ui.tryOn] : null;
   return `${ev?`<div class="banner"><span class="eyebrow">Evento de moda</span><strong>${ev.title}</strong><span class="tiny">${ev.hint} Los estilos que suman están marcados.</span></div>`:'<h2>Vestidor</h2>'}
-    ${stage(w,true)}
+    ${stage(w, ev?ev.bg:'shop', 'sm')}
     <div class="seg"><button class="${!shop?'on':''}" data-act="mode" data-v="mine">Mis cosas</button><button class="${shop?'on':''}" data-act="mode" data-v="shop">Tienda${S.job==='tienda'?' −20%':''}</button></div>
     <div class="tabs">${TABS.map(t=>`<button class="tab ${t.id===ui.tab?'on':''}" data-act="tab" data-v="${t.id}">${t.label}</button>`).join('')}</div>
     ${list.length?`<div class="grid">${list.map(card).join('')}</div>`:`<div class="empty">${shop?'Ya compraste todo lo de esta sección.':'Todavía no tenés nada acá. Mirá la tienda.'}</div>`}
@@ -519,9 +793,11 @@ function rCloset(){
 
 function rResult(){
   const r = S.result;
+  const stars = Array.from({length:5},(_,i)=>`<svg viewBox="0 0 64 64" aria-hidden="true" style="color:${i<r.stars?'#E2B347':'var(--line)'}">${PIC.estrellaF}</svg>`).join('');
   return `<div class="eyebrow">${r.title}</div>
-    ${stage(null,true)}
-    <div class="stars" aria-label="${r.stars} de 5 estrellas">${'★'.repeat(r.stars)}<span class="off">${'★'.repeat(5-r.stars)}</span></div>
+    ${stage(null, r.bg||'gala')}
+    <div class="stars" aria-label="${r.stars} de 5 estrellas">${stars}</div>
+    <div class="verdict">${VERDICT[r.stars]}</div>
     <p class="story">${r.text}</p>
     <div class="fb">
       ${r.good.length?`<div><b>Lo que más gustó:</b> ${r.good.join(', ')}</div>`:''}
@@ -533,8 +809,8 @@ function rResult(){
 function rFinal(){
   const e = ending();
   return `<div class="ending"><span class="eyebrow">Tu final</span><h2>${e.t}</h2><p>${e.d}</p></div>
-    ${stage()}
-    <div class="info" style="font-weight:800"><span style="color:var(--gold)">$ ${S.money}</span><span style="color:var(--accent)">★ ${S.fame} fama</span><span style="color:var(--mint)">♥ ${S.mood}/10 ánimo</span></div>
+    ${stage(null,'gala','lg')}
+    <div class="info" style="font-weight:900"><span style="color:var(--gold)">$ ${S.money}</span><span style="color:var(--accent)">★ ${S.fame} fama</span><span style="color:var(--mint)">♥ ${S.mood}/10 ánimo</span></div>
     <p class="muted tiny">Hay 7 finales distintos. Probá otros caminos: otra casa, otro trabajo u otra propuesta en el capítulo 3.</p>
     <button class="btn primary" data-act="free">Seguir jugando en modo libre</button>
     <button class="btn ghost" data-act="resetYes">Jugar una historia nueva</button>`;
@@ -542,40 +818,41 @@ function rFinal(){
 
 /* ---------- Puzzles ---------- */
 const PUZ = {
-  memoria:{name:'Memoria fashion', ic:'🃏', d:'Encontrá las 6 parejas antes de que se termine el tiempo.', max:'hasta $130'},
-  palabras:{name:'Palabras de moda', ic:'🔤', d:'Ordená las letras para formar palabras del mundo de la moda.', max:'hasta $200'},
-  vidriera:{name:'La vidriera', ic:'🛍️', d:'Mirá en qué orden se iluminan las prendas y repetilo.', max:'hasta $250'},
+  memoria:{name:'Memoria fashion', ic:'vestido', d:'Encontrá las 6 parejas antes de que se termine el tiempo.', max:'hasta $130'},
+  palabras:{name:'Palabras de moda', ic:'labial', d:'Ordená las letras para formar palabras del mundo de la moda.', max:'hasta $200'},
+  vidriera:{name:'La vidriera', ic:'cartera', d:'Mirá en qué orden se iluminan las prendas y repetilo.', max:'hasta $250'},
 };
 const WORDS = ['VESTIDO','CARTERA','TACOS','PASARELA','GLITTER','BUFANDA','LABIAL','CAMPERA','POLLERA','SANDALIA','COLLAR','PERFUME','MODELO','DISEÑO','BOTAS','TAPADO','ESTILO','COSTURA','VIDRIERA','MAQUILLAJE','DESFILE','PULSERA'];
-const ICONS = ['👗','👠','👜','💄','🕶️','👒','💍','👢'];
+const ICONS = ['vestido','taco','cartera','labial','lentes','pamela','anillo','bota'];
 
 function rPuzzles(){
   return `<h2>Trabajos extra</h2>
-    <div class="info"><span class="pips">Energía ${Array.from({length:MAXE},(_,i)=>`<span class="pip ${i<S.energy?'on':''}"></span>`).join('')}</span><span class="muted">Cada trabajo usa 1 de energía</span></div>
+    <div class="info"><span class="pips">Energía ${pipsHTML()}</span><span class="muted">Cada trabajo usa 1 de energía</span></div>
     ${S.energy<=0?`<div class="notice">No te queda energía. ${S.done?'Andá a dormir para empezar un día nuevo.':'Seguí la historia: en el próximo capítulo se recarga.'}</div>`:''}
-    <div class="stack">${Object.entries(PUZ).map(([k,p])=>`<button class="btn" data-act="puz" data-v="${k}" ${S.energy>0?'':'disabled'}><span class="pcard"><span class="ic">${p.ic}</span><span>${p.name}<span class="note">${p.d} Pagan ${p.max}.</span></span></span></button>`).join('')}</div>
+    <div class="stack">${Object.entries(PUZ).map(([k,p])=>`<button class="btn ico" data-act="puz" data-v="${k}" ${S.energy>0?'':'disabled'}><span class="ic">${icon(p.ic)}</span><span>${p.name}<span class="note">${p.d} Pagan ${p.max}.</span></span></button>`).join('')}</div>
     <button class="btn ghost" data-act="back">Volver</button>`;
 }
 
 function clearP(){ if(!P) return; clearInterval(P.timer); (P.tos||[]).forEach(clearTimeout); }
 function later(fn,ms){ const t=setTimeout(fn,ms); P.tos.push(t); }
-function tick(){ P.timer=setInterval(()=>{ if(P.over) return; P.time--; if(P.time<=0){ P.time=0; endPuzzle(); } else render(); },1000); }
+function tick(){ P.timer=setInterval(()=>{ if(P.over) return; P.time--; if(P.time<=0){ P.time=0; endPuzzle(); } else updTimer(); },1000); }
+function updTimer(){ const t=document.querySelector('.timer'); if(t) t.textContent=P.time+' s'; const b=document.querySelector('.bar i'); if(b) b.style.width=(P.time/P.total*100)+'%'; }
 
 function startPuzzle(k){
   if(S.energy<=0) return;
   S.energy--; save();
   if(k==='memoria'){
     const pool = shuffle(ICONS).slice(0,6);
-    P = {k, cards:shuffle([...pool,...pool]).map(e=>({e,open:false,done:false})), first:null, lock:false, time:45, matched:0, tos:[]};
+    P = {k, cards:shuffle([...pool,...pool]).map(e=>({e,open:false,done:false})), first:null, lock:false, time:45, total:45, matched:0, tos:[]};
     tick();
   }
   if(k==='palabras'){
-    P = {k, words:shuffle(WORDS).slice(0,5), idx:0, time:75, earned:0, solved:0, tos:[]};
+    P = {k, words:shuffle(WORDS).slice(0,5), idx:0, time:75, total:75, earned:0, solved:0, tos:[]};
     setWord(); tick();
   }
   if(k==='vidriera'){
     P = {k, len:3, seq:[], input:[], phase:'show', lit:-1, rounds:0, earned:0, tos:[]};
-    later(newRound,500);
+    later(newRound,600);
   }
   view='puzzle'; render(); scrollTop();
 }
@@ -597,25 +874,27 @@ function endPuzzle(){
   if(P.k==='palabras') pay = P.earned + (P.solved===P.words.length ? P.time : 0);
   if(P.k==='vidriera') pay = P.earned;
   pay = Math.min(pay, P.k==='memoria'?130:P.k==='palabras'?200:250);
-  P.over = true; P.pay = pay; S.money += pay; save(); render();
+  P.over = true; P.pay = pay; S.money += pay; if(pay) bumpKeys.push('money'); save(); render();
+  if(pay>=100) confetti(90);
 }
 function rPuzzle(){
   const meta = PUZ[P.k];
-  if(P.over) return `<div class="stack center" style="padding-top:20px"><div class="eyebrow">${meta.name}</div><span style="font-size:3rem">${meta.ic}</span>
+  if(P.over) return `<div class="stack center" style="padding-top:20px"><div class="eyebrow">${meta.name}</div><div style="width:96px;height:96px">${icon('moneda')}</div>
     <div class="big">+$${P.pay}</div><p class="muted">${P.pay>=100?'¡Excelente trabajo!':P.pay>0?'Bien ahí, sumaste algo de plata.':'Esta vez no salió. ¡La próxima seguro!'}</p></div>
     <button class="btn primary" data-act="puzBack">Volver</button>`;
   let body = '';
-  if(P.k==='memoria') body = `<div class="ptop"><span>Parejas ${P.matched}/6</span><span class="timer">${P.time} s</span></div>
-    <div class="mem">${P.cards.map((c,i)=>`<button class="card ${c.open||c.done?'up':''} ${c.done?'done':''}" data-act="mem" data-v="${i}" aria-label="Carta ${i+1}">${c.open||c.done?c.e:''}</button>`).join('')}</div>`;
+  const bar = P.total ? `<div class="bar"><i style="width:${P.time/P.total*100}%"></i></div>` : '';
+  if(P.k==='memoria') body = `<div class="ptop"><span>Parejas ${P.matched}/6</span><span class="timer">${P.time} s</span></div>${bar}
+    <div class="mem">${P.cards.map((c,i)=>`<button class="card ${c.open||c.done?'up':''} ${c.done?'done':''}" data-act="mem" data-v="${i}" aria-label="Carta ${i+1}"><span class="b"></span><span class="f">${icon(c.e)}</span></button>`).join('')}</div>`;
   if(P.k==='palabras'){
     const w = P.words[P.idx];
-    body = `<div class="ptop"><span>Palabra ${P.idx+1}/${P.words.length} · $${P.earned}</span><span class="timer">${P.time} s</span></div>
+    body = `<div class="ptop"><span>Palabra ${P.idx+1}/${P.words.length} · $${P.earned}</span><span class="timer">${P.time} s</span></div>${bar}
       <div class="slots ${P.flash||''}">${w.split('').map((_,i)=>{const pi=P.picked[i];return pi!==undefined?`<button class="tile slot full" data-act="wp" data-v="${i}">${P.letters[pi].ch}</button>`:`<span class="tile slot"></span>`;}).join('')}</div>
       <div class="letters">${P.letters.map((l,i)=>`<button class="tile ${l.used?'used':''}" data-act="wl" data-v="${i}" ${l.used?'disabled':''}>${l.ch}</button>`).join('')}</div>
       <div class="row"><button class="btn ghost" data-act="wclear">Borrar</button><button class="btn ghost" data-act="wskip">Saltar</button></div>`;
   }
-  if(P.k==='vidriera') body = `<div class="ptop"><span>${P.phase==='show'?'Mirá la vidriera…':`Repetí el orden: ${P.input.length}/${P.seq.length}`}</span><span>$${P.earned}</span></div>
-    <div class="vid">${ICONS.slice(0,6).map((e,i)=>`<button class="${P.lit===i?'lit':''}" data-act="vid" data-v="${i}" ${P.phase==='input'?'':'disabled'} aria-label="Prenda ${i+1}">${e}</button>`).join('')}</div>
+  if(P.k==='vidriera') body = `<div class="ptop"><span>${P.phase==='show'?'Mirá la vidriera…':P.phase==='input'?`Repetí el orden: ${P.input.length}/${P.seq.length}`:'…'}</span><span>$${P.earned}</span></div>
+    <div class="vid">${ICONS.slice(0,6).map((e,i)=>`<button class="${P.lit===i?'lit':''}" data-act="vid" data-v="${i}" ${P.phase==='input'?'':'disabled'} aria-label="Prenda ${i+1}">${icon(e)}</button>`).join('')}</div>
     <p class="muted tiny">Ronda de ${P.len} prendas. Cada ronda que acertás suma más plata.</p>`;
   return `<div class="eyebrow">Trabajo extra</div><h2>${meta.name}</h2>${body}<button class="linkbtn" data-act="puzQuit">Terminar y cobrar lo que llevo</button>`;
 }
@@ -624,21 +903,24 @@ function rPuzzle(){
 function render(){
   rStats();
   const m = document.getElementById('main');
-  let html;
-  if(view==='puzzle' && P) html = rPuzzle();
-  else if(view==='puzzles') html = rPuzzles();
-  else if(view==='closet' || S.scene==='event') html = rCloset();
-  else if(S.scene==='setup') html = rSetup();
-  else if(S.scene==='hub') html = rHub();
-  else if(S.scene==='result') html = rResult();
-  else if(S.scene==='final') html = rFinal();
-  else html = rStory();
+  let html, key;
+  if(view==='puzzle' && P){ html = rPuzzle(); key = 'pz'+P.k+(P.over?'o':''); }
+  else if(view==='puzzles'){ html = rPuzzles(); key='pzs'; }
+  else if(view==='closet' || S.scene==='event'){ html = rCloset(); key='closet'; }
+  else if(S.scene==='setup'){ html = rSetup(); key='setup'; }
+  else if(S.scene==='hub'){ html = rHub(); key='hub'; }
+  else if(S.scene==='result'){ html = rResult(); key='result'; }
+  else if(S.scene==='final'){ html = rFinal(); key='final'; }
+  else { html = rStory(); key=S.scene; }
   m.innerHTML = html;
+  if(key!==lastKey){ m.classList.remove('enter'); void m.offsetWidth; m.classList.add('enter'); lastKey=key; }
+  else m.classList.remove('enter');
+  ui.pop = false;
 }
 
 const ACT = {
-  skin:v=>{ S.skin=+v; document.querySelectorAll('.swatch').forEach((b,i)=>b.classList.toggle('on',i===S.skin)); document.getElementById('prev').innerHTML=stage(null,true); },
-  start:()=>{ if(!S.name.trim()) return; S.name=S.name.trim(); enterScene('c1_llegada'); save(); render(); scrollTop(); },
+  skin:v=>{ S.skin=+v; document.querySelectorAll('.swatch').forEach((b,i)=>b.classList.toggle('on',i===S.skin)); document.getElementById('prev').innerHTML=stage(null,'city','sm'); },
+  start:()=>{ if(!S.name.trim()) return; S.name=S.name.trim(); enterScene('c1_llegada'); save(); render(); scrollTop(); chapterCard(1); },
   choice:v=>{
     const c = SCENES[S.scene].choices()[+v]; if(c.req && !c.req()) return;
     S.notice = null; applyFx(c.fx); c.set && c.set();
@@ -654,19 +936,21 @@ const ACT = {
     const it = IT[v];
     if(S.owned.includes(v)){ applyWear(S.wear,it); ui.tryOn=null; save(); }
     else ui.tryOn = ui.tryOn===v ? null : v;
-    render();
+    ui.pop = true; render();
   },
   buy:()=>{
     const it = IT[ui.tryOn]; if(!it) return; const p = price(it);
     if(S.money < p) return;
-    S.money -= p; S.owned.push(it.id); applyWear(S.wear,it); ui.tryOn=null; save();
-    toast(`Compraste ${it.name} · −$${p}`); render();
+    S.money -= p; S.owned.push(it.id); applyWear(S.wear,it); ui.tryOn=null; bumpKeys.push('money'); save();
+    toast(`Compraste ${it.name} · −$${p}`); ui.pop = true; render();
+    sparkleAt(document.querySelector('.stage'));
   },
   ready:()=>{
     const ev = EVENTS[S.event]; const sc = scoreOutfit(ev.themes); const r = ev.result(sc.stars);
     applyFx(r.fx);
-    S.result = {title:ev.title, stars:sc.stars, good:sc.good, bad:sc.bad, text:r.text, next:ev.next};
+    S.result = {title:ev.title, bg:ev.bg, stars:sc.stars, good:sc.good, bad:sc.bad, text:r.text, next:ev.next};
     S.scene='result'; S.event=null; ui.tryOn=null; view=null; save(); render(); scrollTop();
+    if(sc.stars>=4) setTimeout(()=>confetti(), 650);
   },
   resultNext:()=>{ const n=S.result.next; S.result=null; goScene(n); },
   puz:v=>startPuzzle(v),
@@ -677,19 +961,19 @@ const ACT = {
     c.open=true;
     if(P.first===null){ P.first=i; render(); return; }
     const a=P.cards[P.first]; P.first=null;
-    if(a.e===c.e){ a.done=c.done=true; a.open=c.open=false; P.matched++; render(); if(P.matched===6) later(endPuzzle,400); }
-    else { P.lock=true; render(); later(()=>{ a.open=c.open=false; P.lock=false; render(); },700); }
+    if(a.e===c.e){ P.lock=true; render(); later(()=>{ a.done=c.done=true; P.matched++; P.lock=false; render(); if(P.matched===6) later(endPuzzle,500); },380); }
+    else { P.lock=true; render(); later(()=>{ a.open=c.open=false; P.lock=false; render(); },850); }
   },
   wl:v=>{
     const w=P.words[P.idx], l=P.letters[+v]; if(P.over||l.used||P.flash) return;
     l.used=true; P.picked.push(+v);
     if(P.picked.length===w.length){
       const guess = P.picked.map(i=>P.letters[i].ch).join('');
-      if(guess===w){ P.flash='ok'; P.solved++; P.earned+=30; render(); later(nextWord,600); }
+      if(guess===w){ P.flash='ok'; P.solved++; P.earned+=30; render(); later(nextWord,650); }
       else { P.flash='bad'; render(); later(()=>{ P.letters.forEach(x=>x.used=false); P.picked=[]; P.flash=null; render(); },600); }
     } else render();
   },
-  wp:v=>{ if(P.flash) return; const i=+v; const removed=P.picked.splice(i); removed.forEach(pi=>P.letters[pi].used=false); render(); },
+  wp:v=>{ if(P.flash) return; const removed=P.picked.splice(+v); removed.forEach(pi=>P.letters[pi].used=false); render(); },
   wclear:()=>{ if(P.flash) return; P.letters.forEach(x=>x.used=false); P.picked=[]; render(); },
   wskip:()=>{ if(P.flash) return; nextWord(); },
   vid:v=>{
@@ -699,12 +983,12 @@ const ACT = {
       if(P.input.length===P.seq.length){ P.phase='wait'; P.rounds++; P.earned+=P.len*10; P.len++; toast(`¡Bien! +$${(P.len-1)*10}`); if(P.len>7) later(endPuzzle,500); else later(newRound,900); }
     } else { P.phase='wait'; toast('¡Uy! Ese no era'); later(endPuzzle,700); }
   },
-  sleep:()=>{ S.energy=MAXE; S.mood=Math.min(10,S.mood+1); save(); toast('Día nuevo · energía al máximo'); render(); },
+  sleep:()=>{ S.energy=MAXE; S.mood=Math.min(10,S.mood+1); bumpKeys.push('mood'); save(); toast('Día nuevo · energía al máximo'); render(); },
   showEnd:()=>{ S.scene='final'; save(); render(); scrollTop(); },
   free:()=>{ S.scene='hub'; S.pending=null; save(); render(); scrollTop(); },
   reset:()=>{ ui.resetAsk=true; render(); },
   resetNo:()=>{ ui.resetAsk=false; render(); },
-  resetYes:()=>{ clearP(); P=null; view=null; ui={tab:'ropa',mode:'mine',tryOn:null,resetAsk:false}; S=fresh(); save(); render(); scrollTop(); },
+  resetYes:()=>{ clearP(); P=null; view=null; ui={tab:'ropa',mode:'mine',tryOn:null,resetAsk:false,pop:false}; S=fresh(); save(); render(); scrollTop(); },
 };
 function nextWord(){ P.idx++; if(P.idx>=P.words.length) endPuzzle(); else { setWord(); render(); } }
 
@@ -718,6 +1002,7 @@ document.addEventListener('input', e=>{
 
 function boot(data){
   S = (data && data.S) ? Object.assign(fresh(), data.S) : (load() || fresh());
+  if(!IT[S.wear.hairColor]) S.wear.hairColor = 'hc_castano';
   render();
 }
 try { window.claude?.hot?.snapshot?.(()=>({S})); } catch(e){}
