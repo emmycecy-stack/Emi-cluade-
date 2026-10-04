@@ -346,87 +346,97 @@ const icon = (k, cls='') => `<svg viewBox="0 0 64 64" class="${cls}" aria-hidden
 let UID = 0;
 const pair = (svg, cx=100) => svg + `<g transform="translate(${cx*2},0) scale(-1,1)">${svg}</g>`;
 function bez(t,p){ const u=1-t; return [u*u*u*p[0]+3*u*u*t*p[2]+3*u*t*t*p[4]+t*t*t*p[6], u*u*u*p[1]+3*u*u*t*p[3]+3*u*t*t*p[5]+t*t*t*p[7]]; }
-const LID = [105,141.5,111,128.5,134,125,144,137.5];
-const LASHES = (()=>{ let d=''; for(let i=0;i<10;i++){ const t=.04+i*.1; const [x,y]=bez(t,LID); const len=3+Math.sin(t*Math.PI*.8+.3)*3.6; const a=-Math.PI/2-(1-t)*.95; const x2=x+Math.cos(a)*len, y2=y+Math.sin(a)*len; d+=`M${x.toFixed(1)},${y.toFixed(1)} Q${((x+x2)/2-1.2).toFixed(1)},${((y+y2)/2+.6).toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)} `; } return d; })();
+const LID = [106,139,110,131,120,127.5,129,128.5];
+const LASHES = (()=>{ let d=''; for(let i=0;i<8;i++){ const t=i/8*.95; const [x,y]=bez(t,LID); const len=4.8-t*2.4; const a=-Math.PI/2-(1-t)*1.05; const x2=x+Math.cos(a)*len, y2=y+Math.sin(a)*len; d+=`M${x.toFixed(1)},${y.toFixed(1)} Q${((x+x2)/2-.8).toFixed(1)},${((y+y2)/2+.5).toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)} `; } return d; })();
 const HP = {
-  face:'M150,62 C192,62 212,94 212,140 C212,176 198,204 178,224 C168,234 159,240 150,240 C141,240 132,234 122,224 C102,204 88,176 88,140 C88,94 108,62 150,62 Z',
-  eye:'M105,141.5 C111,128.5 134,125 144,137.5 C135,146 117,148.5 105,141.5Z',
-  neck:'M128,206 C130,234 128,252 122,268 L178,268 C172,252 170,234 172,206 Z',
-  torso:'M30,362 C30,306 64,282 106,272 C122,268 136,264 150,264 C164,264 178,268 194,272 C236,282 270,306 270,362 Z',
+  face:'M150,66 C187,66 208,94 208,134 C208,168 196,196 178,216 C167,229 158,236 150,236 C142,236 133,229 122,216 C104,196 92,168 92,134 C92,94 113,66 150,66 Z',
+  eye:'M106,139 C110,131 120,127.5 129,128.5 C135,129.5 139,133 141,141 C133,145.5 118,146 106,139 Z',
+  brow:'M143,122.5 C138,117 128,113.5 120,113.5 C113,113.5 107,116 102,121.5 C108,119 114,117.4 120,117.4 C128,117.4 136,119.8 143,125.5 Z',
+  neck:'M132,208 C134,236 132,252 126,268 L174,268 C168,252 166,236 168,208 Z',
+  torso:'M30,362 C30,308 64,284 108,274 C122,270 136,266 150,266 C164,266 178,270 192,274 C236,284 270,308 270,362 Z',
 };
 const FOLD = id => `<linearGradient id="${id}f" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".26"/><stop offset=".25" stop-color="#000" stop-opacity="0"/><stop offset=".45" stop-color="#fff" stop-opacity=".16"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".28"/></linearGradient>`;
 function headDefs(id, w, skinIdx){
-  const sk = SKINS[skinIdx] ?? SKINS[1], skD = shade(sk,-.22), skL = shade(sk,.16);
+  const sk = SKINS[skinIdx] ?? SKINS[1], skD = shade(sk,-.16), skL = shade(sk,.12);
   const hc = IT[w.hairColor].color, ec = IT[w.eyeColor||'ec_marron'].color, lc = IT[w.lips].color;
-  return `<radialGradient id="${id}fc" cx=".5" cy=".42" r=".66"><stop offset="0" stop-color="${skL}"/><stop offset=".6" stop-color="${sk}"/><stop offset="1" stop-color="${skD}"/></radialGradient>
-  <linearGradient id="${id}nk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${shade(sk,-.32)}"/><stop offset=".5" stop-color="${sk}"/><stop offset="1" stop-color="${sk}"/></linearGradient>
-  <radialGradient id="${id}sh" cx=".5" cy=".25" r=".85"><stop offset="0" stop-color="${skL}"/><stop offset=".5" stop-color="${sk}"/><stop offset="1" stop-color="${skD}"/></radialGradient>
-  <linearGradient id="${id}hp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${shade(hc,.32)}"/><stop offset=".4" stop-color="${hc}"/><stop offset="1" stop-color="${shade(hc,-.38)}"/></linearGradient>
-  <radialGradient id="${id}ir" cx=".42" cy=".38" r=".62"><stop offset="0" stop-color="${shade(ec,.6)}"/><stop offset=".55" stop-color="${ec}"/><stop offset="1" stop-color="${shade(ec,-.55)}"/></radialGradient>
-  <linearGradient id="${id}ew" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D4C3C4"/><stop offset=".5" stop-color="#FBF7F6"/><stop offset="1" stop-color="#EDE3E3"/></linearGradient>
-  <linearGradient id="${id}lp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${shade(lc,-.18)}"/><stop offset=".5" stop-color="${lc}"/><stop offset="1" stop-color="${shade(lc,-.22)}"/></linearGradient>
+  return `<radialGradient id="${id}fc" cx=".5" cy=".45" r=".6"><stop offset="0" stop-color="${skL}"/><stop offset=".7" stop-color="${sk}"/><stop offset="1" stop-color="${skD}"/></radialGradient>
+  <linearGradient id="${id}nk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${shade(sk,-.28)}"/><stop offset=".55" stop-color="${sk}"/><stop offset="1" stop-color="${sk}"/></linearGradient>
+  <radialGradient id="${id}sh" cx=".5" cy=".2" r=".9"><stop offset="0" stop-color="${skL}"/><stop offset=".55" stop-color="${sk}"/><stop offset="1" stop-color="${skD}"/></radialGradient>
+  <linearGradient id="${id}hp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${shade(hc,.18)}"/><stop offset=".35" stop-color="${hc}"/><stop offset="1" stop-color="${shade(hc,-.3)}"/></linearGradient>
+  <linearGradient id="${id}hs" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <radialGradient id="${id}ir" cx=".5" cy=".55" r=".55"><stop offset="0" stop-color="${shade(ec,.5)}"/><stop offset=".35" stop-color="${shade(ec,.15)}"/><stop offset=".8" stop-color="${ec}"/><stop offset="1" stop-color="${shade(ec,-.5)}"/></radialGradient>
+  <linearGradient id="${id}ew" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E2D5D5"/><stop offset=".55" stop-color="#FAF6F5"/><stop offset="1" stop-color="#F1E8E7"/></linearGradient>
+  <linearGradient id="${id}lp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${shade(lc,-.1)}"/><stop offset=".6" stop-color="${lc}"/><stop offset="1" stop-color="${shade(lc,-.15)}"/></linearGradient>
   <linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF0B8"/><stop offset=".5" stop-color="#D9A93A"/><stop offset="1" stop-color="#946A0C"/></linearGradient>
-  <radialGradient id="${id}bl"><stop offset="0" stop-color="#EE5F84" stop-opacity=".55"/><stop offset="1" stop-color="#EE5F84" stop-opacity="0"/></radialGradient>
+  <radialGradient id="${id}bl"><stop offset="0" stop-color="#F0708F" stop-opacity=".42"/><stop offset="1" stop-color="#F0708F" stop-opacity="0"/></radialGradient>
   <linearGradient id="${id}ln" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1B1022"/><stop offset="1" stop-color="#8A3A6A" stop-opacity=".85"/></linearGradient>
   ${FOLD(id)}
+  <filter id="${id}b1" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation=".6"/></filter>
   <filter id="${id}b2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2"/></filter>
-  <filter id="${id}b5" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter>
+  <filter id="${id}b4" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4"/></filter>
+  <filter id="${id}b5" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
   <clipPath id="${id}ec" clipPathUnits="userSpaceOnUse"><path d="${HP.eye}"/></clipPath>`;
 }
-const strand = (d,c,o,wd=1.6) => `<path d="${d}" stroke="${c}" stroke-width="${wd}" fill="none" opacity="${o}" stroke-linecap="round"/>`;
+const strand = (d,c,o,wd=1.4) => `<path d="${d}" stroke="${c}" stroke-width="${wd}" fill="none" opacity="${o}" stroke-linecap="round"/>`;
+const HAIRTOP = 'M90,146 C84,82 112,38 150,38 C188,38 216,82 210,146 C206,116 194,94 174,84 C166,80 158,78 150,78 C142,78 134,80 126,84 C106,94 94,116 90,146 Z';
 function hairBack(w, id){
-  const H = `url(#${id}hp)`, hs = IT[w.hair].shape, hcD = shade(IT[w.hairColor].color,-.4);
-  if(hs==='largo') return `<path d="M86,124 C78,60 112,38 150,38 C190,38 224,60 216,124 C222,182 236,242 250,302 C238,322 214,328 196,320 L104,320 C86,328 62,322 50,302 C64,242 78,182 86,124Z" fill="${H}"/>`;
-  if(hs==='ondas') return `<path d="M84,124 C74,58 112,34 150,34 C190,34 226,58 216,124 C236,150 220,176 238,204 C254,230 234,256 252,284 C246,312 222,326 196,320 L104,320 C78,326 54,312 48,284 C66,256 46,230 62,204 C80,176 64,150 84,124Z" fill="${H}"/>`;
-  if(hs==='bob') return `<path d="M84,128 C78,62 112,40 150,40 C188,40 222,62 216,128 C218,170 222,200 226,226 C200,240 100,240 74,226 C78,200 82,170 84,128Z" fill="${H}"/>`;
-  if(hs==='rodete') return `<circle cx="150" cy="40" r="32" fill="${H}"/>`+strand('M126,30 Q150,14 174,30',hcD,.5)+strand('M122,44 Q150,26 178,44',hcD,.5)+strand('M128,58 Q150,44 172,58',hcD,.5);
+  const H = `url(#${id}hp)`, hs = IT[w.hair].shape, hcD = shade(IT[w.hairColor].color,-.35);
+  if(hs==='largo') return `<path d="M84,130 C76,66 110,32 150,32 C190,32 224,66 216,130 C220,176 232,232 248,296 C236,320 210,328 192,320 L108,320 C90,328 64,320 52,296 C68,232 80,176 84,130Z" fill="${H}"/>`;
+  if(hs==='ondas') return `<path d="M84,128 C74,60 112,30 150,30 C190,30 226,60 216,128 C236,152 220,178 238,206 C254,232 234,258 252,286 C246,312 222,326 196,320 L104,320 C78,326 54,312 48,286 C66,258 46,232 62,206 C80,178 64,152 84,128Z" fill="${H}"/>`;
+  if(hs==='bob') return `<path d="M86,132 C80,66 112,36 150,36 C188,36 220,66 214,132 C216,172 220,202 224,226 C200,240 100,240 76,226 C80,202 84,172 86,132Z" fill="${H}"/>`;
+  if(hs==='rodete') return `<circle cx="150" cy="38" r="30" fill="${H}"/>`+strand('M128,28 Q150,12 172,28',hcD,.45)+strand('M124,42 Q150,24 176,42',hcD,.45)+strand('M130,56 Q150,42 170,56',hcD,.45);
   return '';
 }
 function hairFront(w, id){
-  const H = `url(#${id}hp)`, hs = IT[w.hair].shape, hc = IT[w.hairColor].color, hcL = shade(hc,.42), hcD = shade(hc,-.42);
+  const H = `url(#${id}hp)`, hs = IT[w.hair].shape, hc = IT[w.hairColor].color, hcL = shade(hc,.35), hcD = shade(hc,-.38);
+  const shine = `<path d="M112,62 C128,50 172,50 188,62" stroke="url(#${id}hs)" stroke-width="9" fill="none" filter="url(#${id}b2)"/>`;
+  const part = strand('M150,40 C150,56 149,68 150,78',hcD,.38,1.4);
+  const topStr = strand('M146,44 C122,52 102,82 96,130',hcL,.3,1.2)+strand('M154,44 C178,52 198,82 204,130',hcL,.3,1.2)+strand('M140,50 C124,62 112,88 106,116',hcD,.22,1.2)+strand('M160,50 C176,62 188,88 194,116',hcD,.22,1.2);
   if(hs==='largo'){
-    const lock = 'M98,100 C84,140 82,190 78,236 C74,276 68,302 76,336 C92,332 100,302 102,272 C106,232 110,182 114,142 C116,120 112,104 98,100 Z';
-    return pair(`<path d="${lock}" fill="${H}"/>`+strand('M100,112 C90,160 86,220 80,300',hcL,.45)+strand('M107,124 C99,184 95,244 88,322',hcD,.4),150)
-      + `<path d="M86,134 C80,72 116,42 152,42 C190,42 222,70 214,134 C210,104 196,86 170,80 C150,96 118,108 90,122 Z" fill="${H}"/>`
-      + strand('M170,80 C148,62 116,66 98,96',hcL,.55,2.2) + strand('M174,84 C196,92 208,110 212,128',hcL,.45) + strand('M160,84 C140,98 116,106 94,118',hcD,.45) + strand('M150,52 C130,56 110,70 100,90',hcL,.35,3);
+    const lock = 'M127,83 C106,94 95,118 93,150 C91,186 88,222 80,258 C74,286 66,308 74,336 C90,328 99,302 103,274 C107,246 107,214 107,186 C107,150 111,112 127,83 Z';
+    return pair(`<path d="${lock}" fill="${H}"/>`+strand('M124,88 C108,104 101,140 100,190 C99,230 94,270 84,318',hcL,.32)+strand('M114,110 C106,140 104,180 102,220',hcD,.35)+strand('M98,230 C94,262 88,292 80,326',hcD,.35),150)
+      + `<path d="${HAIRTOP}" fill="${H}"/>` + topStr + part + shine;
   }
   if(hs==='ondas'){
-    const lock = 'M100,100 C80,130 96,160 82,190 C70,220 92,246 78,276 C68,300 84,322 80,338 C98,328 106,302 100,278 C96,252 114,226 106,196 C100,166 116,140 112,108Z';
-    return pair(`<path d="${lock}" fill="${H}"/>`+strand('M104,112 C92,140 104,166 92,194 C82,222 100,248 88,280',hcL,.5)+strand('M108,130 C104,160 110,190 100,220',hcD,.4),150)
-      + `<path d="M84,136 C78,70 114,40 150,40 C188,40 224,68 216,136 C212,110 202,92 186,86 C178,98 166,96 160,86 C148,100 130,104 120,98 C110,108 96,116 86,124Z" fill="${H}"/>`
-      + strand('M186,86 C170,64 140,60 116,78',hcL,.55,2.2) + strand('M120,98 C112,82 116,64 132,56',hcL,.4) + strand('M160,86 C156,70 166,58 182,58',hcD,.4);
+    const lock = 'M127,83 C104,96 96,124 100,150 C104,176 88,196 92,222 C96,248 80,266 84,292 C86,312 74,324 78,338 C96,330 104,310 102,290 C100,266 112,248 108,224 C104,200 116,182 112,156 C108,128 112,104 127,83Z';
+    return pair(`<path d="${lock}" fill="${H}"/>`+strand('M122,90 C106,108 104,130 106,152 C108,176 94,198 98,222 C102,246 88,268 92,292',hcL,.34)+strand('M114,120 C112,150 110,170 104,196',hcD,.35),150)
+      + `<path d="${HAIRTOP}" fill="${H}"/>` + topStr + part + shine;
   }
   if(hs==='bob'){
-    return pair(`<path d="M94,112 C84,152 84,192 80,226 L106,226 C102,192 100,152 108,114Z" fill="${H}"/>`+strand('M98,130 C92,166 90,196 88,222',hcL,.45),150)
-      + `<path d="M90,122 C90,66 120,48 150,48 C180,48 210,66 210,122 C202,108 190,100 178,98 C170,108 156,108 146,100 C132,108 116,108 104,104 C98,110 94,116 90,122 Z" fill="${H}"/>`
-      + strand('M110,70 Q150,52 190,70',hcL,.5,2.2) + strand('M120,100 C122,86 128,74 140,66',hcD,.35) + strand('M176,98 C176,84 170,74 160,68',hcD,.35);
+    const lock = 'M124,96 C106,106 96,126 94,154 C92,182 90,206 84,228 L108,228 C106,206 104,182 104,158 C104,132 110,110 124,96 Z';
+    return pair(`<path d="${lock}" fill="${H}"/>`+strand('M120,100 C106,116 100,150 98,190 C97,206 95,216 92,226',hcL,.45),150)
+      + `<path d="M90,148 C84,82 112,42 150,42 C188,42 216,82 210,148 C206,118 196,98 178,90 C160,84 140,88 124,96 C106,106 94,124 90,148Z" fill="${H}"/>`
+      + strand('M176,46 C150,50 126,64 112,90',hcL,.5) + strand('M170,58 C150,64 132,76 120,96',hcD,.35) + strand('M190,60 C200,80 206,106 208,130',hcL,.4) + shine;
   }
   if(hs==='rodete'){
-    return `<path d="M90,128 C88,74 116,50 150,50 C184,50 212,74 210,128 C204,100 182,82 150,82 C118,82 96,100 90,128Z" fill="${H}"/>`
-      + strand('M100,104 C108,80 128,66 146,62',hcL,.5,1.8) + strand('M200,104 C192,80 172,66 154,62',hcL,.5,1.8) + strand('M118,84 C128,72 140,66 150,64',hcD,.35) + strand('M182,84 C172,72 160,66 150,64',hcD,.35)
-      + `<path d="M124,18 Q150,30 176,18" stroke="#C81D6B" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+    return `<path d="M92,138 C88,80 114,46 150,46 C186,46 212,80 208,138 C202,108 182,88 150,86 C118,88 98,108 92,138Z" fill="${H}"/>`
+      + strand('M100,112 C108,84 128,68 146,62',hcL,.5) + strand('M200,112 C192,84 172,68 154,62',hcL,.5) + strand('M116,90 C128,74 140,66 150,62',hcD,.35) + strand('M184,90 C172,74 160,66 150,62',hcD,.35)
+      + pair(strand('M101,118 C96,138 99,158 96,178',hc,.9,1.8),150) + shine
+      + `<path d="M126,18 Q150,30 174,18" stroke="#C81D6B" stroke-width="5" fill="none" stroke-linecap="round"/>`;
   }
   return '';
 }
 function faceSVG(w, skinIdx, id){
-  const sk = SKINS[skinIdx] ?? SKINS[1], skD = shade(sk,-.22), skDD = shade(sk,-.45), skL = shade(sk,.18);
-  const hcD = shade(IT[w.hairColor].color,-.42), ec = IT[w.eyeColor||'ec_marron'].color, ey = IT[w.eyes], a = IT[w.acc], lc = IT[w.lips].color;
+  const sk = SKINS[skinIdx] ?? SKINS[1], skD = shade(sk,-.2), skDD = shade(sk,-.42);
+  const hcD = shade(IT[w.hairColor].color,-.45), ec = IT[w.eyeColor||'ec_marron'].color, ey = IT[w.eyes], a = IT[w.acc], lc = IT[w.lips].color;
   let s = '';
-  s += pair(`<ellipse cx="91" cy="154" rx="9" ry="16" fill="${sk}"/><path d="M89,144 Q85,154 90,164" stroke="${skD}" stroke-width="2" fill="none" opacity=".6"/>`,150);
+  s += pair(`<path d="M96,136 C86,132 84,150 88,162 C90,169 94,171 98,169 Z" fill="${sk}"/><path d="M93,142 Q89,152 93,162" stroke="${skD}" stroke-width="1.6" fill="none" opacity=".6"/>`,150);
   s += `<path d="${HP.face}" fill="url(#${id}fc)"/>`;
-  s += pair(`<path d="M95,152 Q104,190 128,222" stroke="${skD}" stroke-width="12" fill="none" opacity=".3" filter="url(#${id}b5)"/>`,150);
-  s += `<ellipse cx="150" cy="94" rx="34" ry="14" fill="#fff" opacity=".18" filter="url(#${id}b5)"/><ellipse cx="150" cy="230" rx="11" ry="5" fill="#fff" opacity=".22" filter="url(#${id}b2)"/>`;
-  s += pair(`<ellipse cx="117" cy="176" rx="22" ry="14" fill="url(#${id}bl)" opacity="${IT[w.blush].shape!=='none'?1:.3}"/><ellipse cx="114" cy="164" rx="10" ry="4" fill="#fff" opacity=".18" filter="url(#${id}b2)"/>`,150);
-  if(ey.shape!=='none') s += pair(`<path d="M101,142 C103,116 138,110 149,136 C139,123 116,125 101,142Z" fill="${ey.color}" opacity=".85" filter="url(#${id}b2)"/>`+(ey.id==='e_dorado'||ey.id==='e_violeta'?`<circle cx="118" cy="128" r="1.3" fill="#fff"/><circle cx="130" cy="124.5" r="1" fill="#fff"/><circle cx="139" cy="130" r=".9" fill="#fff"/><circle cx="124" cy="125" r=".7" fill="#fff"/>`:''),150);
-  s += pair(`<path d="M103,121 C111,108 133,103 147,110 C147,112 146.6,113.5 146,114.5 C133,109 114,112 104.5,123.5 Z" fill="${hcD}" opacity=".8"/><path d="M107,118 L111,113 M113,115.5 L117,110.5 M119,113.5 L123,109 M125,112 L129,108 M132,111 L136,107.5 M139,110.5 L142,108" stroke="${hcD}" stroke-width="1" opacity=".7"/>`,150);
-  s += pair(`<path d="M106,132 C116,120 136,118 146,130" stroke="${skD}" stroke-width="1.5" fill="none" opacity=".55"/>`,150);
-  s += `<g class="eyes">`+pair(`<path d="${HP.eye}" fill="url(#${id}ew)"/><g clip-path="url(#${id}ec)"><circle cx="125.5" cy="138" r="10" fill="url(#${id}ir)"/><path d="M125.5,128 L125.5,148 M115.5,138 L135.5,138 M118.4,130.9 L132.6,145.1 M132.6,130.9 L118.4,145.1" stroke="${shade(ec,.5)}" stroke-width=".6" opacity=".45"/><circle cx="125.5" cy="138" r="10" fill="none" stroke="${shade(ec,-.65)}" stroke-width="1.4"/><circle cx="125.5" cy="138" r="4.2" fill="#120A10"/><path d="M104,136 C112,126 134,124 146,134 L146,128 L104,128Z" fill="#3A2028" opacity=".35"/></g><circle cx="129" cy="134.5" r="2.4" fill="#fff"/><circle cx="122" cy="141.5" r="1" fill="#fff" opacity=".8"/><path d="M105,141.5 C111,128.5 134,125 144,137.5" stroke="#1A0F14" stroke-width="2.8" fill="none" stroke-linecap="round"/><path d="M106.5,140 L98.5,133.5 L107,137Z" fill="#1A0F14"/><path d="${LASHES}" stroke="#1A0F14" stroke-width="1.05" fill="none" stroke-linecap="round"/><path d="M107.5,143.5 C117,148.5 134,147 143,139.5" stroke="${skDD}" stroke-width="1" fill="none" opacity=".55"/>`,150)+`</g>`;
-  s += `<path d="M143,138 Q138,162 141,182" stroke="${skD}" stroke-width="4" fill="none" opacity=".35" filter="url(#${id}b2)"/><path d="M152,132 L153,172" stroke="#fff" stroke-width="3" opacity=".16" filter="url(#${id}b2)"/><ellipse cx="150" cy="182" rx="9" ry="6" fill="${skL}" opacity=".55" filter="url(#${id}b2)"/><path d="M140,186 Q144.5,192 149,189.5 M160,186 Q155.5,192 151,189.5" stroke="${skDD}" stroke-width="1.6" fill="none" opacity=".55" stroke-linecap="round"/><ellipse cx="150" cy="194" rx="10" ry="2.6" fill="${skD}" opacity=".3" filter="url(#${id}b2)"/>`;
-  s += `<path d="M128,206 C135,199 143,196.5 150,200 C157,196.5 165,199 172,206 C163,208 157,208.5 150,208.5 C143,208.5 137,208 128,206Z" fill="url(#${id}lp)"/><path d="M128,206 C137,209.5 163,209.5 172,206 C167,218 159,223 150,223 C141,223 133,218 128,206Z" fill="url(#${id}lp)"/><path d="M128,206 C137,210 163,210 172,206" stroke="${shade(lc,-.48)}" stroke-width="1.4" fill="none"/><ellipse cx="154" cy="214.5" rx="7" ry="2.6" fill="#fff" opacity=".42" filter="url(#${id}b2)"/><path d="M146,201.5 Q150,203 154,201.5" stroke="#fff" stroke-width="1" opacity=".35" fill="none"/><path d="M126,205 Q124,207 126,209 M174,205 Q176,207 174,209" stroke="${skD}" stroke-width="1" fill="none" opacity=".5"/>`;
+  s += pair(`<path d="M97,126 C97,170 110,200 134,226" stroke="${skD}" stroke-width="14" fill="none" opacity=".3" filter="url(#${id}b5)"/>`,150);
+  s += pair(`<ellipse cx="123" cy="132" rx="21" ry="10" fill="${skD}" opacity=".24" filter="url(#${id}b4)"/>`,150);
+  s += `<ellipse cx="150" cy="98" rx="30" ry="14" fill="#fff" opacity=".14" filter="url(#${id}b5)"/><ellipse cx="150" cy="228" rx="10" ry="5" fill="#fff" opacity=".16" filter="url(#${id}b2)"/>`;
+  s += pair(`<ellipse cx="118" cy="160" rx="12" ry="6" fill="#fff" opacity=".14" filter="url(#${id}b4)"/><ellipse cx="119" cy="174" rx="19" ry="11" fill="url(#${id}bl)" opacity="${IT[w.blush].shape!=='none'?1:.35}"/>`,150);
+  s += `<path d="M108,102 C122,86 178,86 192,102" stroke="${skDD}" stroke-width="10" fill="none" opacity=".16" filter="url(#${id}b4)"/>`;
+  if(ey.shape!=='none') s += pair(`<path d="M103,139 C106,124 128,117 142,133 C134,126 115,126 103,139Z" fill="${ey.color}" opacity=".78" filter="url(#${id}b2)"/>`+(ey.id==='e_dorado'||ey.id==='e_violeta'?`<circle cx="117" cy="128" r=".9" fill="#fff"/><circle cx="126" cy="125.5" r=".8" fill="#fff"/><circle cx="134" cy="127.5" r=".7" fill="#fff"/><circle cx="121" cy="124.5" r=".6" fill="#fff"/>`:''),150);
+  s += pair(`<path d="${HP.brow}" fill="${hcD}" opacity=".78" filter="url(#${id}b1)"/>`,150);
+  s += pair(`<path d="M108,131 C115,124 129,121.5 139,127.5" stroke="${skDD}" stroke-width="1.1" fill="none" opacity=".32"/>`,150);
+  s += `<g class="eyes">`+pair(`<path d="${HP.eye}" fill="url(#${id}ew)"/><g clip-path="url(#${id}ec)"><circle cx="124.5" cy="137" r="8.4" fill="url(#${id}ir)"/><circle cx="124.5" cy="137" r="8.4" fill="none" stroke="${shade(ec,-.6)}" stroke-width="1.1" opacity=".8"/><circle cx="124.5" cy="137" r="3.5" fill="#110A0E"/><path d="M104,136 C110,129 121,126 130,127 C136,128 140,132 142,137 L142,124 L104,124Z" fill="#2A1218" opacity=".36"/></g><circle cx="127.4" cy="134" r="2" fill="#fff"/><circle cx="121.6" cy="140" r=".8" fill="#fff" opacity=".7"/><path d="M105.5,139.5 C110,131 120,127.5 129,128.5 C135,129.5 139,133 141,140.5" stroke="#1A0F14" stroke-width="2.1" fill="none" stroke-linecap="round"/><path d="M107,137.6 L100.8,133.4 L107.6,135.8Z" fill="#1A0F14"/><path d="${LASHES}" stroke="#1A0F14" stroke-width="1" fill="none" stroke-linecap="round"/><path d="M108,141.8 C116,145.6 130,145.4 140,141.8" stroke="${skDD}" stroke-width=".9" fill="none" opacity=".4"/>`,150)+`</g>`;
+  s += `<path d="M141,142 C138,160 137,172 140,183" stroke="${skD}" stroke-width="5" fill="none" opacity=".26" filter="url(#${id}b2)"/><ellipse cx="151" cy="182" rx="5" ry="3" fill="#fff" opacity=".2" filter="url(#${id}b2)"/><ellipse cx="150" cy="191" rx="9" ry="3" fill="${skDD}" opacity=".22" filter="url(#${id}b2)"/><path d="M142.5,186.5 Q145.5,190 148.5,189 M157.5,186.5 Q154.5,190 151.5,189" stroke="${skDD}" stroke-width="1.3" fill="none" opacity=".5" stroke-linecap="round"/><path d="M140.5,186 Q139.5,181 143,178.5 M159.5,186 Q160.5,181 157,178.5" stroke="${skD}" stroke-width="1" fill="none" opacity=".45"/><path d="M147,194 L146.6,200 M153,194 L153.4,200" stroke="${skD}" stroke-width="1" opacity=".22"/>`;
+  s += `<path d="M129,207 C134,203 141,199.5 146,200.5 C148,200.8 149,201.5 150,202 C151,201.5 152,200.8 154,200.5 C159,199.5 166,203 171,207 C164,208.5 157,209 150,209 C143,209 136,208.5 129,207 Z" fill="url(#${id}lp)"/><path d="M129,207 C136,208.5 143,209 150,209 C157,209 164,208.5 171,207 C168,215 160,220 150,220 C140,220 132,215 129,207 Z" fill="url(#${id}lp)"/><path d="M129,207 C136,209.2 164,209.2 171,207" stroke="${shade(lc,-.45)}" stroke-width="1.2" fill="none"/><ellipse cx="153" cy="214" rx="6" ry="2" fill="#fff" opacity=".45" filter="url(#${id}b1)"/><path d="M127.5,206 Q127,208.5 129,209.5 M172.5,206 Q173,208.5 171,209.5" stroke="${skD}" stroke-width="1" fill="none" opacity=".45"/><ellipse cx="150" cy="224" rx="9" ry="2.5" fill="${skDD}" opacity=".18" filter="url(#${id}b2)"/>`;
   s += hairFront(w,id);
-  if(a.shape==='aros') s += pair(`<circle cx="91" cy="172" r="3" fill="url(#${id}g)"/><path d="M91,175 L81,194 L91,224 L101,194Z" fill="none" stroke="url(#${id}g)" stroke-width="2.6" stroke-linejoin="round"/><path d="M91,186 L86,196 L91,210 L96,196Z" fill="url(#${id}g)"/><path d="M83,194 L99,194" stroke="url(#${id}g)" stroke-width="1.6"/>`,150);
-  if(a.shape==='lentes') s += `<path d="M104,128 L196,128" stroke="#1B1022" stroke-width="4"/>`+pair(`<path d="M98,129 L88,142" stroke="#1B1022" stroke-width="3"/><path d="M98,126 L148,126 C150,150 142,164 124,164 C104,164 96,150 98,126Z" fill="url(#${id}ln)"/><path d="M98,126 L148,126 C150,150 142,164 124,164 C104,164 96,150 98,126Z" fill="none" stroke="#1B1022" stroke-width="3"/><path d="M106,132 L118,148" stroke="#fff" stroke-width="3" opacity=".35" stroke-linecap="round"/>`,150);
-  if(a.shape==='gorra') s += `<path d="M82,114 C82,50 116,30 150,30 C184,30 218,50 218,114 Z" fill="${a.color}"/><path d="M82,114 C82,50 116,30 150,30 C184,30 218,50 218,114 Z" fill="url(#${id}f)"/><path d="M150,30 L150,110" stroke="${shade(a.color,-.25)}" stroke-width="2"/><circle cx="150" cy="32" r="4" fill="${shade(a.color,-.25)}"/><path d="M72,114 C100,100 200,100 228,114 C230,126 214,126 198,120 C168,112 132,112 102,120 C86,126 70,126 72,114Z" fill="${shade(a.color,-.15)}"/>`;
+  if(a.shape==='aros') s += pair(`<circle cx="94" cy="170" r="3" fill="url(#${id}g)"/><path d="M94,173 L85,190 L94,216 L103,190Z" fill="none" stroke="url(#${id}g)" stroke-width="2.4" stroke-linejoin="round"/><path d="M94,183 L89.5,192 L94,204 L98.5,192Z" fill="url(#${id}g)"/><path d="M86.5,190 L101.5,190" stroke="url(#${id}g)" stroke-width="1.4"/>`,150);
+  if(a.shape==='lentes') s += `<path d="M104,127 L196,127" stroke="#1B1022" stroke-width="4"/>`+pair(`<path d="M100,128 L92,140" stroke="#1B1022" stroke-width="3"/><path d="M100,125 L146,125 C148,148 140,160 123,160 C105,160 98,148 100,125Z" fill="url(#${id}ln)"/><path d="M100,125 L146,125 C148,148 140,160 123,160 C105,160 98,148 100,125Z" fill="none" stroke="#1B1022" stroke-width="3"/><path d="M107,131 L118,146" stroke="#fff" stroke-width="3" opacity=".35" stroke-linecap="round"/>`,150);
+  if(a.shape==='gorra') s += `<path d="M84,114 C84,52 116,30 150,30 C184,30 216,52 216,114 Z" fill="${a.color}"/><path d="M84,114 C84,52 116,30 150,30 C184,30 216,52 216,114 Z" fill="url(#${id}f)"/><path d="M150,30 L150,110" stroke="${shade(a.color,-.25)}" stroke-width="2"/><circle cx="150" cy="32" r="4" fill="${shade(a.color,-.25)}"/><path d="M74,114 C100,100 200,100 226,114 C228,126 212,126 196,120 C168,112 132,112 104,120 C88,126 72,126 74,114Z" fill="${shade(a.color,-.15)}"/>`;
   return s;
 }
 const PSPARK = [[90,330],[120,346],[180,340],[210,328],[150,352],[70,350],[230,350],[140,324],[165,332],[104,318],[196,316]];
